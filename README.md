@@ -1,7 +1,9 @@
 # SSE23-Project
 
-Install dependencies
-`npm install`
+POC Runtime Analysis :
 
-Execute
-`node index.js`
+[a relative link](poc_runtime/README.md)
+
+
+PoC Wrapper : 
+[a relative link](poc_wrapper/README.md)
