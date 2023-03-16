@@ -10,3 +10,4 @@ Execute
 
 `node index.js`
 
+![Runtime](docs/images/runtime_exec.png)
