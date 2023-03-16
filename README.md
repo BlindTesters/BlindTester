@@ -2,8 +2,9 @@
 
 POC Runtime Analysis :
 
-[a relative link](poc_runtime/README.md)
+[PoC Runtime Analysis](poc_runtime/README.md)
 
 
 PoC Wrapper : 
-[a relative link](poc_wrapper/README.md)
+
+[PoC Wrapper](poc_wrapper/README.md)
