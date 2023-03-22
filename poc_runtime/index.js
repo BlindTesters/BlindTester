@@ -1,5 +1,19 @@
 const Iroh = require("iroh");
 const fs = require('fs');
+const yaml = require('js-yaml');
+
+class RuntimeCall {
+  constructor(name) {
+    this.name = name;
+    this.eval = [];
+  }
+
+  setEvaluation(args, returnValue) {
+    this.eval.push({args, returnValue})
+  }
+}
+
+var exceptions = ["require", "log"];
 
 fs.readFile('exec.js', 'utf8', (err, data) => {
   if (err) {
@@ -9,54 +23,37 @@ fs.readFile('exec.js', 'utf8', (err, data) => {
 
   let stage = new Iroh.Stage(data);
 
+  let calls = {};
+
   // function call
   stage.addListener(Iroh.CALL)
-    .on("before", (e) => {
-      let external = e.external ? "#external" : "";
-      console.log(" ".repeat(e.indent) + "call", e.name, external, "(", e.arguments, ")");
-      //console.log(e.getSource());
-    })
     .on("after", (e) => {
-      let external = e.external ? "#external" : "";
-      console.log(" ".repeat(e.indent) + "call", e.name, "end", external, "->", [e.return]);
-      //console.log(e.getSource());
-    });
+      let func_name = e.name;
 
-  // function
-  stage.addListener(Iroh.FUNCTION)
-    .on("enter", (e) => {
-      let sloppy = e.sloppy ? "#sloppy" : "";
-      if (e.sloppy) {
-        console.log(" ".repeat(e.indent) + "call", e.name, sloppy, "(", e.arguments, ")");
-        //console.log(e.getSource());
-      }
-    })
-    .on("leave", (e) => {
-      let sloppy = e.sloppy ? "#sloppy" : "";
-      if (e.sloppy) {
-        console.log(" ".repeat(e.indent) + "call", e.name, "end", sloppy, "->", [void 0]);
-        //console.log(e.getSource());
-      }
-    })
-    .on("return", (e) => {
-      let sloppy = e.sloppy ? "#sloppy" : "";
-      if (e.sloppy) {
-        console.log(" ".repeat(e.indent) + "call", e.name, "end", sloppy, "->", [e.return]);
-        //console.log(e.getSource());
+      if (!exceptions.includes(func_name)) {
+        if (calls[func_name] == null) {
+          calls[func_name] = new RuntimeCall(func_name)
+        }
+
+        calls[func_name].setEvaluation(e.arguments, e.return)
       }
     });
 
   // program
-  stage.addListener(Iroh.PROGRAM)
-    .on("enter", (e) => {
-      console.log(" ".repeat(e.indent) + "Program");
-    })
-    .on("leave", (e) => {
-      console.log(" ".repeat(e.indent) + "Program end", "->", e.return);
-    });
 
   eval(stage.script);
 
+  console.log("Detected calls : ")
 
-  console.log(data);
+  for(var key in calls) {
+    var value = calls[key];
+    console.log(value);
+  }
+
+  console.log("\nGenerate yaml file...")
+
+  let yamlStr = yaml.dump(calls);
+  let file_path = "runtime.yaml"
+  fs.writeFileSync(file_path, yamlStr, "utf8");
+  console.log("Generating done : " + file_path);
 });
