@@ -1,3 +1,3 @@
-# Node Execution Anylzer
+# NodeJS Execution Anylzer
 
 Get trace from NodeJS execution
