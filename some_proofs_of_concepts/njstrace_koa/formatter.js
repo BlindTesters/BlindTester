@@ -40,12 +40,19 @@ class CustomFormatter extends Formatter {
     // write to a json file with interesting information,
     const project_path = path.dirname(entry.file);
     const main_file = path.basename(entry.file);
+    let executed_functions = [];
+    Object.entries(this.TRACE).forEach(([key, value]) => {
+      executed_functions.push({
+        'name': key,
+        'calls': value
+      });
+    });
     let output = {
       'project_name': 'test',
       'project_path': project_path,
       'main_file': main_file,
       'requires': [],
-      'executed_functions': this.TRACE,
+      'executed_functions': executed_functions,
     };
     require('fs').writeFile(this.stdout, JSON.stringify(output), (error) => {
       if (error) throw error;
