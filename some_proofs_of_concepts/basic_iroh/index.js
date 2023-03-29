@@ -1,6 +1,7 @@
 const Iroh = require("iroh");
 const fs = require('fs');
 const yaml = require('js-yaml');
+const express = require('express')
 
 class RuntimeCall {
   constructor(name) {
@@ -13,9 +14,11 @@ class RuntimeCall {
   }
 }
 
-var exceptions = ["require", "log"];
+var exceptions = ["log"];
 
-let project_file_path = "exec.js"
+//let project_file_path = "exec.js"
+let project_file_path = "express/index.js"
+
 
 fs.readFile(project_file_path, "utf8", (err, data) => {
   if (err) {
@@ -41,6 +44,14 @@ fs.readFile(project_file_path, "utf8", (err, data) => {
       }
     });
 
+  const originalFetch = fetch;
+  listener.on("before", function (e) {
+    if (e.object === fetch) {
+      e.call = function (url) {
+        const targetUrl = url === 'localhost' ? 'localhost' : url;
+        return originalFetch.call(null, [targetUrl].concat(arguments.slice(1)))
+      };
+    }});
   // program
 
   eval(stage.script);
