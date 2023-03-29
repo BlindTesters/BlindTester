@@ -7,11 +7,11 @@ import org.generator.generators.JestGenerator;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Map;
+import java.nio.file.Paths;
 
 
 public class Main {
-    private static String ReadJSONFile(String filepath){
+    private static String ReadJSONFile(String filepath) {
         BufferedReader reader;
         StringBuilder sb = new StringBuilder();
 
@@ -36,10 +36,10 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
         Gson gson = new Gson();
-        JsonReader reader = new JsonReader(new FileReader("trace.json"));
+        JsonReader reader = new JsonReader(new FileReader(Paths.get("traces_examples", "trace.json").toFile()));
+
         Trace t = gson.fromJson(reader, Trace.class);
         JestGenerator jest = new JestGenerator(t, System.lineSeparator());
-
         jest.writeTests(t.getProjectPath());
     }
 }

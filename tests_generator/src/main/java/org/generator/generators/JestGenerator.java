@@ -8,16 +8,15 @@ import org.generator.Trace;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class JestGenerator extends Generator {
-    public JestGenerator(Trace trace, String lineSeparator){
+    public JestGenerator(Trace trace, String lineSeparator) {
         super(trace, lineSeparator);
     }
 
-    private String createTestDescription(String functionName, Call c){
-        if(c.getOutput() != null){
+    private String createTestDescription(String functionName, Call c) {
+        if (c.getOutput() != null) {
             return functionName + " " + c.getInputs() + " should returns " + c.getOutput();
         }
 
@@ -26,13 +25,13 @@ public class JestGenerator extends Generator {
 
     private String writeFunctionCall(String functionName, Call c) {
         StringBuilder sb = new StringBuilder();
-        sb.append(functionName+"(");
+        sb.append(functionName + "(");
         String input;
 
-        for(Object i : c.getInputs()){
+        for (Object i : c.getInputs()) {
             input = transformData(i);
 
-            sb.append(input+",");
+            sb.append(input + ",");
         }
 
         sb.deleteCharAt(sb.length() - 1); //remove last ','
@@ -42,28 +41,20 @@ public class JestGenerator extends Generator {
     }
 
     private String writeExpectTest(String functionName, Call c) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("test('"+createTestDescription(functionName, c)+"', () => {" + getLineSeparator());
-        sb.append("expect(");
-        sb.append(writeFunctionCall(functionName, c)+").toBe(" + transformData(c.getOutput()) + ");");
-        sb.append(getLineSeparator() + "});");
+        String sb = "test('" + createTestDescription(functionName, c) + "', () => {" + getLineSeparator() + "expect(" + writeFunctionCall(functionName, c) + ").toBe(" + transformData(c.getOutput()) + ");" + getLineSeparator() + "});";
 
-        return sb.toString();
+        return sb;
     }
 
     private String writeNoErrorTest(String functionName, Call c) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("test('"+createTestDescription(functionName, c)+"', () => {" + getLineSeparator());
-        sb.append("expect(");
-        sb.append(writeFunctionCall(functionName, c)+").toBe(undefined);");
-        sb.append(getLineSeparator() + "});");
+        String sb = "test('" + createTestDescription(functionName, c) + "', () => {" + getLineSeparator() + "expect(" + writeFunctionCall(functionName, c) + ").toBe(undefined);" + getLineSeparator() + "});";
 
-        return sb.toString();
+        return sb;
     }
 
-    private String transformData(Object o){
+    private String transformData(Object o) {
         if (o instanceof String) {
-            return "'"+o+"'";
+            return "'" + o + "'";
         }
 
         return o.toString();
@@ -73,7 +64,7 @@ public class JestGenerator extends Generator {
         StringBuilder sb = new StringBuilder();
         Trace t = getTrace();
 
-        for(Require r : t.getRequires()){
+        for (Require r : t.getRequires()) {
             sb.append(r.getInclude() + getLineSeparator());
         }
 
@@ -81,12 +72,11 @@ public class JestGenerator extends Generator {
 
         sb.append("describe('auto-" + t.getProjectName() + "', () => {" + getLineSeparator());
 
-        for(ExecutedFunction ef : t.getExecutedFunctions()){
-            for(Call c : ef.getCalls()){
-                if (c.getOutput() != null){
+        for (ExecutedFunction ef : t.getExecutedFunctions()) {
+            for (Call c : ef.getCalls()) {
+                if (c.getOutput() != null) {
                     sb.append(writeExpectTest(ef.getName(), c) + getLineSeparator());
-                }
-                else{
+                } else {
                     sb.append(writeNoErrorTest(ef.getName(), c) + getLineSeparator());
                 }
             }
@@ -97,9 +87,9 @@ public class JestGenerator extends Generator {
     }
 
     @Override
-    public void writeTests (String path) {
+    public void writeTests(String path) {
         try {
-            FileWriter fileWriter = new FileWriter(Paths.get(path, "auto-"+getTrace().getProjectName()+".test.js").toFile());
+            FileWriter fileWriter = new FileWriter(Paths.get(path, "auto-" + getTrace().getProjectName() + ".test.js").toFile());
             BufferedWriter writer = new BufferedWriter(fileWriter);
             writer.write(createTests());
             writer.close();

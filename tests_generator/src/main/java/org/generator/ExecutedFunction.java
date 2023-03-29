@@ -28,12 +28,12 @@ public class ExecutedFunction {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         StringBuilder sb = new StringBuilder();
         String sep = System.lineSeparator();
         sb.append(getName() + sep);
 
-        for (Call c: getCalls()) {
+        for (Call c : getCalls()) {
             sb.append(String.format("  %s" + sep, c.toString()));
         }
 

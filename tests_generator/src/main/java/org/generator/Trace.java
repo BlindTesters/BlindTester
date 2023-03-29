@@ -2,7 +2,6 @@ package org.generator;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.nio.file.Path;
 import java.util.List;
 
 public class Trace {
@@ -70,12 +69,12 @@ public class Trace {
         sb.append(String.format("Main       : %s" + sep, getMainFile()));
         sb.append("Requires   : " + sep);
 
-        for (Require r: getRequires()) {
+        for (Require r : getRequires()) {
             sb.append(String.format("* %s", r.toString()));
         }
 
         sb.append(sep + "Executed   : " + sep);
-        for (ExecutedFunction ef: getExecutedFunctions()) {
+        for (ExecutedFunction ef : getExecutedFunctions()) {
             sb.append(String.format("* %s", ef.toString()));
         }
 
