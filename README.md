@@ -6,14 +6,14 @@
 
 ## NodeJS Execution Analyzer
 
-[Analyzer](node_execution_analyzer/README.md)
+[Analyzer](node_execution_analyzer/)
 
 ## Tests generator
 
-[Generator](tests_generator/README.md)
+[Generator](tests_generator/)
 
 ## Proof of concept
 
-[PoC Runtime Analysis](some_proofs_of_concepts/poc_runtime/README.md)
+[PoC Runtime Analysis](some_proofs_of_concepts/poc_runtime/)
 
-[PoC Wrapper](some_proofs_of_concepts/poc_wrapper/README.md)
+[PoC Wrapper](some_proofs_of_concepts/poc_wrapper/)
