@@ -20,7 +20,6 @@ public abstract class Generator {
                 return lineSeparator;
         }
 
-
         public Trace getTrace() {
                 return trace;
         }

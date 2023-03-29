@@ -69,6 +69,7 @@ public class Trace {
         sb.append(String.format("Path       : %s" + sep, getProjectPath()));
         sb.append(String.format("Main       : %s" + sep, getMainFile()));
         sb.append("Requires   : " + sep);
+
         for (Require r: getRequires()) {
             sb.append(String.format("* %s", r.toString()));
         }

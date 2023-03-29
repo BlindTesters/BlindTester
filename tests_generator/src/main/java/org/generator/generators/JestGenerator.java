@@ -2,6 +2,7 @@ package org.generator.generators;
 
 import org.generator.Call;
 import org.generator.ExecutedFunction;
+import org.generator.Require;
 import org.generator.Trace;
 
 public class JestGenerator extends Generator {
@@ -11,16 +12,17 @@ public class JestGenerator extends Generator {
 
     private String createTestDescription(String functionName, Call c){
         if(c.getOutput() != null){
-            return functionName + " " + c.getInputs() + " returns " + c.getOutput();
+            return functionName + " " + c.getInputs() + " should returns " + c.getOutput();
         }
 
-        return functionName + " " + c.getInputs() + " : void";
+        return functionName + " " + c.getInputs() + " (void) should not cause exception";
     }
 
     private String writeFunctionCall(String functionName, Call c) {
         StringBuilder sb = new StringBuilder();
         sb.append(functionName+"(");
         String input;
+
         for(Object i : c.getInputs()){
             if (i instanceof String) {
                 input = "'"+i+"'";
@@ -31,7 +33,8 @@ public class JestGenerator extends Generator {
 
             sb.append(input+",");
         }
-        sb.deleteCharAt(sb.length()-1); //remove last ,
+
+        sb.deleteCharAt(sb.length() - 1); //remove last ','
         sb.append(")");
 
         return sb.toString();
@@ -61,6 +64,13 @@ public class JestGenerator extends Generator {
     public String createTests() {
         StringBuilder sb = new StringBuilder();
         Trace t = getTrace();
+
+        for(Require r : t.getRequires()){
+            sb.append(r.getInclude() + getLineSeparator());
+        }
+
+        sb.append(getLineSeparator());
+
         sb.append("describe('auto-" + t.getProjectName() + "', () => {" + getLineSeparator());
 
         for(ExecutedFunction ef : t.getExecutedFunctions()){
