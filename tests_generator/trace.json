@@ -1,18 +1,21 @@
 {
-  "project_name": "Koa",
-  "project_path": "/home/lievrel/koa",
-  "main_file": "index.js",
+  "project_name": "seg_small_test",
+  "project_path": "/home/lievrel/sources/SSE23-Project/some_proofs_of_concepts/poc_iroh",
+  "main_file": "exec.js",
   "requires": [
                 {
-                  "include": "require 'my_math'"
+                  "include": "const my_math = require('./my_math');"
                 },
                 {
-                  "include": "require 'koa'"
+                  "include": "const my_vectors = require('./my_vectors');"
+                },
+                {
+                  "include": "const my_hello = require('./my_hello');"
                 }
   ],
   "executed_functions": [
     {
-      "name": "doubler",
+      "name": "my_math.doubler",
       "calls": [
                 {
                   "inputs": [2],
@@ -25,7 +28,7 @@
               ]
     },
     {
-      "name": "sayHello",
+      "name": "my_hello.sayHello",
       "calls": [
         {
           "inputs": ["Test"],

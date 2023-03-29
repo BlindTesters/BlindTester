@@ -40,6 +40,6 @@ public class Main {
         Trace t = gson.fromJson(reader, Trace.class);
         JestGenerator jest = new JestGenerator(t, System.lineSeparator());
 
-        jest.writeTests();
+        jest.writeTests(t.getProjectPath());
     }
 }

@@ -5,6 +5,12 @@ import org.generator.ExecutedFunction;
 import org.generator.Require;
 import org.generator.Trace;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 public class JestGenerator extends Generator {
     public JestGenerator(Trace trace, String lineSeparator){
         super(trace, lineSeparator);
@@ -24,12 +30,7 @@ public class JestGenerator extends Generator {
         String input;
 
         for(Object i : c.getInputs()){
-            if (i instanceof String) {
-                input = "'"+i+"'";
-            }
-            else{
-                input = i.toString();
-            }
+            input = transformData(i);
 
             sb.append(input+",");
         }
@@ -42,24 +43,31 @@ public class JestGenerator extends Generator {
 
     private String writeExpectTest(String functionName, Call c) {
         StringBuilder sb = new StringBuilder();
-        sb.append("test('"+createTestDescription(functionName, c)+"'), () => {" + getLineSeparator());
+        sb.append("test('"+createTestDescription(functionName, c)+"', () => {" + getLineSeparator());
         sb.append("expect(");
-        sb.append(writeFunctionCall(functionName, c)+").toBe(" + c.getOutput() + ");" + getLineSeparator());
-        sb.append("});");
+        sb.append(writeFunctionCall(functionName, c)+").toBe(" + transformData(c.getOutput()) + ");");
+        sb.append(getLineSeparator() + "});");
 
         return sb.toString();
     }
 
     private String writeNoErrorTest(String functionName, Call c) {
         StringBuilder sb = new StringBuilder();
-        sb.append("test('"+createTestDescription(functionName, c)+"'), () => {" + getLineSeparator());
+        sb.append("test('"+createTestDescription(functionName, c)+"', () => {" + getLineSeparator());
         sb.append("expect(");
-        sb.append(writeFunctionCall(functionName, c)+").not.toThrow(error)");
-        sb.append("});");
+        sb.append(writeFunctionCall(functionName, c)+").toBe(undefined);");
+        sb.append(getLineSeparator() + "});");
 
         return sb.toString();
     }
 
+    private String transformData(Object o){
+        if (o instanceof String) {
+            return "'"+o+"'";
+        }
+
+        return o.toString();
+    }
 
     public String createTests() {
         StringBuilder sb = new StringBuilder();
@@ -89,7 +97,16 @@ public class JestGenerator extends Generator {
     }
 
     @Override
-    public void writeTests (){
-        System.out.println(createTests());
+    public void writeTests (String path) {
+        try {
+            FileWriter fileWriter = new FileWriter(Paths.get(path, "auto-"+getTrace().getProjectName()+".test.js").toFile());
+            BufferedWriter writer = new BufferedWriter(fileWriter);
+            writer.write(createTests());
+            writer.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        System.out.println("Tests generated in : " + path);
     }
 }
