@@ -68,13 +68,14 @@ public class Trace {
         sb.append(String.format("Project    : %s" + sep, getProjectName()));
         sb.append(String.format("Path       : %s" + sep, getProjectPath()));
         sb.append(String.format("Main       : %s" + sep, getMainFile()));
-        sb.append("Requires   : ");
+        sb.append("Requires   : " + sep);
         for (Require r: getRequires()) {
-            sb.append(String.format("* %s" + sep, r.toString()));
+            sb.append(String.format("* %s", r.toString()));
         }
 
+        sb.append(sep + "Executed   : " + sep);
         for (ExecutedFunction ef: getExecutedFunctions()) {
-            sb.append(String.format("* %s" + sep, ef.toString()));
+            sb.append(String.format("* %s", ef.toString()));
         }
 
         return sb.toString();

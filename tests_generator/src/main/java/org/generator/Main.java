@@ -2,6 +2,8 @@ package org.generator;
 
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
+import org.generator.generators.JestGenerator;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -36,6 +38,8 @@ public class Main {
         Gson gson = new Gson();
         JsonReader reader = new JsonReader(new FileReader("trace.json"));
         Trace t = gson.fromJson(reader, Trace.class);
-        System.out.println(t);
+        JestGenerator jest = new JestGenerator(t, System.lineSeparator());
+
+        jest.writeTests();
     }
 }
