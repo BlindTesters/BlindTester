@@ -15,7 +15,9 @@ class RuntimeCall {
 
 var exceptions = ["require", "log"];
 
-fs.readFile('exec.js', 'utf8', (err, data) => {
+let project_file_path = "exec.js"
+
+fs.readFile(project_file_path, "utf8", (err, data) => {
   if (err) {
     console.error(err);
     return;

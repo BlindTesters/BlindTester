@@ -1,0 +1,37 @@
+{
+  "project_name": "Koa",
+  "project_path": "/home/lievrel/koa",
+  "main_file": "index.js",
+  "requires": [
+                {
+                  "include": "require 'my_math'"
+                },
+                {
+                  "include": "require 'koa'"
+                }
+  ],
+  "executed_functions": [
+    {
+      "name": "doubler",
+      "calls": [
+                {
+                  "inputs": [2],
+                  "output": 4
+                },
+                {
+                  "inputs": [4],
+                  "output": 8
+                }
+              ]
+    },
+    {
+      "name": "sayHello",
+      "calls": [
+        {
+          "inputs": ["Test"],
+          "output": null
+        }
+      ]
+    }
+  ]
+}
