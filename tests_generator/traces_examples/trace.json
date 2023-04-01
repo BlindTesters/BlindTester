@@ -1,6 +1,6 @@
 {
   "project_name": "seg_small_test",
-  "project_path": "/home/lievrel/sources/SSE23-Project/some_proofs_of_concepts/poc_iroh",
+  "project_path": "/home/lievrel/sources/SSE23-Project/some_proofs_of_concepts/basic_iroh",
   "main_file": "exec.js",
   "requires": [
                 {
