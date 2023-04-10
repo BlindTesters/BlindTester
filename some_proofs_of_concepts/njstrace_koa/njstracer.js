@@ -1,3 +1,9 @@
+/*
+*
+* Currently not used anymore, but kept for reference
+*
+*/
+// use https://www.npmjs.com/package/njstrace to trace the execution of this nodejs app
 const path = require('path');
 const CustomFormatter = require('./formatter');
 const CustomTracer = require('./tracer');
