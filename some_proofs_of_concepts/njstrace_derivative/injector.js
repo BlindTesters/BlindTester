@@ -1,8 +1,7 @@
-const acorn = require('acorn');
+const acorn = require ('acorn');
 const fs = require('fs');
-const path = require('path');
+const path = require ('path');
 const walk = require('acorn-walk');
-
 
 class Injector {
   /**
@@ -25,12 +24,13 @@ class Injector {
     this.project_name = project_name;
     this.output_file_name = output_file_name;
 
+    console.log(this.object)
+
     // Extract the requires from the main file.
     this.extractRequires();
 
     // Wrap the goal function.
     this.wrapFunction();
-    console.log("wrap")
     // Detect SIGINT and call process.exit manually to make sure
     // it is called.
     process.on('SIGINT', (code) => {
@@ -55,7 +55,6 @@ class Injector {
     walk.simple(code, {
       VariableDeclaration(node) {
         node.declarations.forEach(declaration => {
-          console.log(code);
           if (declaration.init && declaration.init.type === 'CallExpression' && declaration.init.callee.name === 'require') {
             const variableName = declaration.id.name;
             const requiredModule = declaration.init.arguments[0].value;
@@ -138,13 +137,14 @@ class Injector {
    * inputs and outputs.
    */
   wrapFunction() {
-    console.log("Wrap function : " + JSON.stringify(arguments))
+    console.log("wrap f")
+    // console.log(this.object[this.fn]('x^2', 'x'));
     // Keep a reference to the original function and the current "this".
     const originalFunction = this.object[this.fn];
+    //console.log(originalFunction('x^4+x^2+x', 'x'))
     const outerThis = this;
     // Wrap the function.
     this.object[this.fn] = function () {
-      console.log(arguments)
       // TODO remove this or add a verbose mode
       console.log(`Executing wrapped "${outerThis.fn}"....`);
       // Call the original function, store trace and return result.
