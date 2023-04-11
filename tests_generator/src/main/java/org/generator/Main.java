@@ -36,7 +36,7 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
         Gson gson = new Gson();
-        JsonReader reader = new JsonReader(new FileReader(Paths.get("traces_examples", "trace.json").toFile()));
+        JsonReader reader = new JsonReader(new FileReader(Paths.get("traces_examples", "trace-koa.json").toFile()));
 
         Trace t = gson.fromJson(reader, Trace.class);
         JestGenerator jest = new JestGenerator(t, System.lineSeparator());

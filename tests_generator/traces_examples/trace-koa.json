@@ -1,0 +1,263 @@
+{
+  "project_name": "SSE23-koa",
+  "project_path": "/Users/kevinberret/Library/Mobile Documents/com~apple~CloudDocs/mcs/sem4/Seminar Software Engineering/SSE23-Project/some_proofs_of_concepts/njstrace_koa",
+  "main_file": "index.js",
+  "requires": [
+    {
+      "include": "const Koa = require(koa);"
+    },
+    {
+      "include": "const Router = require(@koa/router);"
+    }
+  ],
+  "executed_functions": [
+    {
+      "name": "Router.get",
+      "calls": [
+        {
+          "inputs": {
+            "0": ""
+          },
+          "output": {
+            "opts": {},
+            "methods": [
+              "HEAD",
+              "OPTIONS",
+              "GET",
+              "PUT",
+              "PATCH",
+              "POST",
+              "DELETE"
+            ],
+            "exclusive": false,
+            "params": {},
+            "stack": [
+              {
+                "opts": {
+                  "end": true,
+                  "name": null,
+                  "sensitive": false,
+                  "strict": false,
+                  "prefix": ""
+                },
+                "name": null,
+                "methods": [
+                  "HEAD",
+                  "GET"
+                ],
+                "paramNames": [],
+                "stack": [
+                  null
+                ],
+                "path": "",
+                "regexp": {}
+              },
+              {
+                "opts": {
+                  "end": true,
+                  "name": null,
+                  "sensitive": false,
+                  "strict": false,
+                  "prefix": ""
+                },
+                "name": null,
+                "methods": [
+                  "HEAD",
+                  "GET"
+                ],
+                "paramNames": [],
+                "stack": [
+                  null
+                ],
+                "path": "/sum",
+                "regexp": {}
+              },
+              {
+                "opts": {
+                  "end": true,
+                  "name": null,
+                  "sensitive": false,
+                  "strict": false,
+                  "prefix": ""
+                },
+                "name": null,
+                "methods": [
+                  "HEAD",
+                  "GET"
+                ],
+                "paramNames": [],
+                "stack": [
+                  null
+                ],
+                "path": "/diff",
+                "regexp": {}
+              }
+            ]
+          }
+        },
+        {
+          "inputs": {
+            "0": "/sum"
+          },
+          "output": {
+            "opts": {},
+            "methods": [
+              "HEAD",
+              "OPTIONS",
+              "GET",
+              "PUT",
+              "PATCH",
+              "POST",
+              "DELETE"
+            ],
+            "exclusive": false,
+            "params": {},
+            "stack": [
+              {
+                "opts": {
+                  "end": true,
+                  "name": null,
+                  "sensitive": false,
+                  "strict": false,
+                  "prefix": ""
+                },
+                "name": null,
+                "methods": [
+                  "HEAD",
+                  "GET"
+                ],
+                "paramNames": [],
+                "stack": [
+                  null
+                ],
+                "path": "",
+                "regexp": {}
+              },
+              {
+                "opts": {
+                  "end": true,
+                  "name": null,
+                  "sensitive": false,
+                  "strict": false,
+                  "prefix": ""
+                },
+                "name": null,
+                "methods": [
+                  "HEAD",
+                  "GET"
+                ],
+                "paramNames": [],
+                "stack": [
+                  null
+                ],
+                "path": "/sum",
+                "regexp": {}
+              },
+              {
+                "opts": {
+                  "end": true,
+                  "name": null,
+                  "sensitive": false,
+                  "strict": false,
+                  "prefix": ""
+                },
+                "name": null,
+                "methods": [
+                  "HEAD",
+                  "GET"
+                ],
+                "paramNames": [],
+                "stack": [
+                  null
+                ],
+                "path": "/diff",
+                "regexp": {}
+              }
+            ]
+          }
+        },
+        {
+          "inputs": {
+            "0": "/diff"
+          },
+          "output": {
+            "opts": {},
+            "methods": [
+              "HEAD",
+              "OPTIONS",
+              "GET",
+              "PUT",
+              "PATCH",
+              "POST",
+              "DELETE"
+            ],
+            "exclusive": false,
+            "params": {},
+            "stack": [
+              {
+                "opts": {
+                  "end": true,
+                  "name": null,
+                  "sensitive": false,
+                  "strict": false,
+                  "prefix": ""
+                },
+                "name": null,
+                "methods": [
+                  "HEAD",
+                  "GET"
+                ],
+                "paramNames": [],
+                "stack": [
+                  null
+                ],
+                "path": "",
+                "regexp": {}
+              },
+              {
+                "opts": {
+                  "end": true,
+                  "name": null,
+                  "sensitive": false,
+                  "strict": false,
+                  "prefix": ""
+                },
+                "name": null,
+                "methods": [
+                  "HEAD",
+                  "GET"
+                ],
+                "paramNames": [],
+                "stack": [
+                  null
+                ],
+                "path": "/sum",
+                "regexp": {}
+              },
+              {
+                "opts": {
+                  "end": true,
+                  "name": null,
+                  "sensitive": false,
+                  "strict": false,
+                  "prefix": ""
+                },
+                "name": null,
+                "methods": [
+                  "HEAD",
+                  "GET"
+                ],
+                "paramNames": [],
+                "stack": [
+                  null
+                ],
+                "path": "/diff",
+                "regexp": {}
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
