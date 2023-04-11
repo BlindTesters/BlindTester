@@ -30,7 +30,7 @@ class Injector {
 
     // Wrap the goal function.
     this.wrapFunction();
-
+    console.log("wrap")
     // Detect SIGINT and call process.exit manually to make sure
     // it is called.
     process.on('SIGINT', (code) => {
@@ -55,6 +55,7 @@ class Injector {
     walk.simple(code, {
       VariableDeclaration(node) {
         node.declarations.forEach(declaration => {
+          console.log(code);
           if (declaration.init && declaration.init.type === 'CallExpression' && declaration.init.callee.name === 'require') {
             const variableName = declaration.id.name;
             const requiredModule = declaration.init.arguments[0].value;
@@ -137,11 +138,13 @@ class Injector {
    * inputs and outputs.
    */
   wrapFunction() {
+    console.log("Wrap function : " + JSON.stringify(arguments))
     // Keep a reference to the original function and the current "this".
     const originalFunction = this.object[this.fn];
     const outerThis = this;
     // Wrap the function.
     this.object[this.fn] = function () {
+      console.log(arguments)
       // TODO remove this or add a verbose mode
       console.log(`Executing wrapped "${outerThis.fn}"....`);
       // Call the original function, store trace and return result.
