@@ -9,5 +9,3 @@ console.log(momentInst.format('dddd'));
 console.log(momentInst.format("MMM Do YY"));
 console.log(momentInst.format('YYYY [escaped] YYYY'));
 console.log(momentInst.format());
-
-injector.writeTrace()
