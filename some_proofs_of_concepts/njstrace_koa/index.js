@@ -1,14 +1,14 @@
+// Inject a wrapper around the function in the class we want to inspect.
+const Injector = require('../injector/injector.js');
+const lib_name = '@koa/router';
+const Router = new Injector(require(lib_name), lib_name, 'get', __filename, 'SSE23-koa').get_library();
+
 const Koa = require('koa');
-const Router = require('@koa/router');
+
 const { sum, diff } = require('./functions');
 
 const app = new Koa();
 const router = new Router();
-
-// Create an injector and specify the object we want to profile as well as the function to trace.
-// In this case, we want to trace the router.get function.
-const Injector = require('../injector/injector.js');
-const injector = new Injector(router, 'get', __filename, 'SSE23-koa');
 
 router.get('', (ctx, next) => {
     ctx.body = 'Hello world!';

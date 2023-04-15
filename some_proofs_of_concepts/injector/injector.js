@@ -7,19 +7,22 @@ const walk = require('acorn-walk');
 class Injector {
   /**
    * 
-   * @param {*} object The object in which the function to trace is located.
+   * @param {*} library The library in which the function to trace is located.
+   * @param {*} library_name The library name (WIP)
    * @param {*} fn The function to trace.
    * @param {*} main_file The main file of the project.
    * @param {*} project_name The name of the project.
    * @param {*} [output_file_name] The name of the output file (default='trace.json').
    */
-  constructor(object, fn, main_file, project_name, output_file_name='trace.json') {
+  constructor(library, library_name, fn, main_file, project_name, output_file_name='trace.json') {
     // This will contain the trace.
     this.TRACE = {};
     // This will contain all the required modules in the main file.
     this.REQUIRES = [];
     // Assign the parameters.
-    this.object = object;
+    this.library = library;
+    this.library_name = library_name;  // TODO: change this to extract directly from library.
+    this.object_name = this.library_name.split('/').pop();  // TODO: change this to extract directly from library.
     this.fn = fn;
     this.main_file = main_file;
     this.project_name = project_name;
@@ -71,13 +74,18 @@ class Injector {
               // Ignore undefined variables as well as this library.
               if (variableName != undefined && !requiredModule.endsWith('injector.js')) {
                 outerThis.REQUIRES.push({
-                  'include': `const ${variableName} = require(${requiredModule});`
+                  'include': `const ${variableName} = require('${requiredModule}');`
                 });
               }
             }
           }
         });
       }
+    });
+    // Add the inspected library to the requires.
+    // TODO: check this and improved if needed (since this var might not have the same name in the main file)
+    this.REQUIRES.push({
+      'include': `const ${this.object_name} = require('${this.library_name}');`
     });
   }
 
@@ -89,7 +97,7 @@ class Injector {
    */
   addTrace(_inputs, _output) {
     // Build the function name.
-    const funcName = `${this.object.constructor.name}.${this.fn}`;
+    const funcName = `${this.object_name}.${this.fn}`;
 
     // Initialize the array if it does not exist yet.
     if (this.TRACE[funcName] === undefined) {
@@ -140,10 +148,14 @@ class Injector {
    */
   wrapFunction() {
     // Keep a reference to the original function and the current "this".
-    const originalFunction = this.object[this.fn];
+    let originalFunction = undefined;
+    if (this.library.prototype === undefined) {
+      originalFunction = this.library[this.fn];
+    } else {
+      originalFunction = this.library.prototype[this.fn];
+    }
     const outerThis = this;
-    // Wrap the function.
-    this.object[this.fn] = function () {
+    const newFunction = function () {
       // TODO remove this or add a verbose mode
       console.log(`Executing wrapped "${outerThis.fn}"....`);
       // Call the original function, store trace and return result.
@@ -151,8 +163,40 @@ class Injector {
       outerThis.addTrace(arguments, result);
       return result;
     }
-    // Bind the target object to the function (to allow "this" keyword to work in object).
-    .bind(this.object);
+
+    // Wrap the function depending on the library workflow.
+    let wrapped = false;
+    if (this.library.prototype === undefined) {
+      if (this.library[this.fn].set === undefined) {
+        // Handle libraries that do not use a "setter" property to define
+        // the function we'd like to wrap.
+        this.library = {...this.library, [this.fn]: newFunction}
+        wrapped = true;
+      } else{
+        // Handle libraries that use a "setter" property to define the
+        // function we'd like to wrap.
+        this.library[this.fn] = newFunction;
+        wrapped = true;
+      }
+    } else {
+      // Handle simplest case libraries.
+      this.library.prototype[this.fn] = newFunction;
+      wrapped = true;
+    }
+
+    // Warn the user if the function could not be wrapped.
+    if (!wrapped) {
+      throw new Error(`Could not wrap function ${this.fn}, this library might be incompatible...`);
+    }
+
+  }
+
+  /**
+   * This function will return the library wrapped by the injector.
+   * @returns The library wrapped by the injector.
+   */
+  get_library() {
+    return this.library;
   }
 }
 
