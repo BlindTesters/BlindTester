@@ -34,7 +34,7 @@ public class ExecutedFunction {
         sb.append(getName() + sep);
 
         for (Call c : getCalls()) {
-            sb.append(String.format("  %s" + sep, c.toString()));
+            sb.append(String.format("  %s%s", c.toString(), sep));
         }
 
         return sb.toString();

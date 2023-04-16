@@ -14,7 +14,7 @@ class Injector {
    * @param {*} project_name The name of the project.
    * @param {*} [output_file_name] The name of the output file (default='trace.json').
    */
-  constructor(library, library_name, fn, main_file, project_name, output_file_name='trace.json') {
+  constructor(library, library_name, fn, main_file, project_name, verbose=false, output_file_name='trace.json') {
     // This will contain the trace.
     this.TRACE = {};
     // This will contain all the required modules in the main file.
@@ -27,6 +27,7 @@ class Injector {
     this.main_file = main_file;
     this.project_name = project_name;
     this.output_file_name = output_file_name;
+    this.verbose = verbose;
 
     // Extract the requires from the main file.
     this.extractRequires();
@@ -130,12 +131,14 @@ class Injector {
       'requires': this.REQUIRES,
       'executed_functions': executed_functions,
     };
-    // TODO remove this or add a verbose mode
-    // Pretty print the output to the console.
-    console.log('Trace content');
-    console.log('------------');
-    console.log(JSON.stringify(output, null, 2));
-    console.log('------------');
+
+    if (this.verbose) {
+      console.log('Trace content');
+      console.log('------------');
+      console.log(JSON.stringify(output, null, 2));
+      console.log('------------');
+    }
+
     // Write the output to a file snychronously (to make sure it is written before the process exits).
     fs.writeFileSync(this.output_file_name, JSON.stringify(output), () => {
       if (error) throw error;
@@ -156,8 +159,11 @@ class Injector {
     }
     const outerThis = this;
     const newFunction = function () {
-      // TODO remove this or add a verbose mode
-      console.log(`Executing wrapped "${outerThis.fn}"....`);
+
+      if(this.verbose) {
+        console.log(`Executing wrapped "${outerThis.fn}"....`);
+      }
+
       // Call the original function, store trace and return result.
       const result = originalFunction.apply(this, arguments);
       outerThis.addTrace(arguments, result);
