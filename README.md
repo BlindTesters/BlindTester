@@ -3,14 +3,13 @@
 <p align="center">
     <img 
     src="https://creazilla-store.fra1.digitaloceanspaces.com/emojis/46374/sunglasses-emoji-clipart-md.png" 
-    width="200" 
-    height="200">
+    width="250" 
+    height="250">
 </p>
 
+Project for the Software Engineering Seminar 2023 at University of Bern for the BeNeFri Joint Master of Computer Science.
 
-Project for the Software Engineering Seminar 2023 at UniBE
-
-The goal of this project is to generate automatically tests from runtime execution for a specific function.
+The goal of this project is to generate automatically tests for a specific function from runtime execution.
 
 ## Dependencies
 
@@ -29,12 +28,12 @@ The goal of this project is to generate automatically tests from runtime executi
         height="100">
 </p>
 
-### JSpector - Get trace from a NodeJS app 
+### JSpector - Get trace from a NodeJS app execution
 
 Inject the following snippet in your application to get a trace of the desired function to analyze :
 
 ``` javascript
-const JSpector = require('../../JSpector/jspector');
+const JSpector = require('path_to/JSpector/jspector');
 
 // replace LIB_NAME with the name of your library that contains the function to test
 const lib_name = 'LIB_NAME';
@@ -47,6 +46,15 @@ const crypto = new JSpector(require(lib_name), lib_name, 'FUNCTION_NAME', __file
 
 ## BlindTester
 
+<p align="center">
+    <img 
+    src="https://creazilla-store.fra1.digitaloceanspaces.com/emojis/46374/sunglasses-emoji-clipart-md.png" 
+    width="100" 
+    height="100">
+</p>
+
+Each function call is considered as a black box. The trace contains all inputs and output for a specific function. BlindTester will generate a test for each distinct call.
+
 ### Compile BlindTester
 
 Go to the project's directory and : 
@@ -55,13 +63,23 @@ Go to the project's directory and :
 $ mvn clean compile assembly:single
 ```
 
-### Generate some tests for Jest
+### Usage 
 
 ``` sh
-$ java -jar path_to_jar/blindtester-1.0-SNAPSHOT-jar-with-dependencies.jar path_to_trace/trace.json
+$ java -jar path_to_jar/blindtester-1.0-SNAPSHOT-jar-with-dependencies.jar GENERATOR path_to_trace/trace.json
 ```
 
-### Execute tests with Jest
+Where `GENERATOR` is the name of the generator that target a test system.
+
+*At this time, only Jest is implemented in BlindTester*
+
+#### Generate some tests for Jest
+
+``` sh
+$ java -jar path_to_jar/blindtester-1.0-SNAPSHOT-jar-with-dependencies.jar jest path_to_trace/trace.json
+```
+
+#### Execute tests with Jest
 
 Go to your project directory and : 
 
@@ -81,7 +99,7 @@ Coming soon...
 
 All rights reserved.
 
-Images are both under CCA 4.0 and created by *JoyPixels* from [creazilla](https://creazilla.com) :
+Images are both under CCA 4.0 and created by *JoyPixels* from [creazilla.com](https://creazilla.com) :
 
 - [Glasses](https://creazilla.com/nodes/46374-sunglasses-emoji-clipart)
 

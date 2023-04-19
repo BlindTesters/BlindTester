@@ -2,12 +2,18 @@
 const JSpector = require('../../JSpector/jspector');
 
 const lib_name = 'moment';
-const moment = new JSpector(require(lib_name), lib_name, 'format', __filename, 'SSE23-moment').get_library();
+const moment = new JSpector(require(lib_name), lib_name, 'diff', __filename, 'SSE23-moment').get_library();
 
-const momentInst = moment();
+// 1s => 1000 ms
+var date1 = moment('2023-10-01 00:00:00');
+var date2 = moment('2023-10-01 00:00:01');
+var diff = date2.diff(date1);
 
-console.log(momentInst.format('MMMM Do YYYY, h:mm:ss a'));
-console.log(momentInst.format('dddd'));
-console.log(momentInst.format("MMM Do YY"));
-console.log(momentInst.format('YYYY [escaped] YYYY'));
-console.log(momentInst.format());
+console.log(diff)
+
+// 1 min => 60'000 ms
+date1 = moment('2023-10-01 00:00:00');
+date2 = moment('2023-10-01 00:01:00');
+diff = date2.diff(date1);
+
+console.log(diff)

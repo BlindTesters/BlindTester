@@ -1,6 +1,5 @@
 package org.blindtester.generator;
 
-
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,8 +27,10 @@ public abstract class Generator {
 
     public void makeReport(){
         Trace t = getTrace();
-        System.out.println("Project : " + t.getProjectName());
-        System.out.println(t.getRequires().size() + " libraries import");
+
+        System.out.println("***************************************************");
+        System.out.println("Report for project : " + t.getProjectName());
+        System.out.println("- " + t.getRequires().size() + " libraries import");
 
         for (ExecutedFunction f : t.getExecutedFunctions()) {
             // get list of calls for the function
@@ -38,8 +39,10 @@ public abstract class Generator {
             // get distinct calls
             List<Call> distinctCalls = calls.stream().distinct().collect(Collectors.toList());
 
-            System.out.println("Function " + f.getName() + " called " + f.getCalls().size() + " times");
-            System.out.println(" of which " + distinctCalls.size() + " times with different inputs");
+            System.out.println("- Function " + f.getName() + " call(s) : " + f.getCalls().size());
+            System.out.println("-- Distinct call(s) : " + distinctCalls.size());
         }
+        System.out.println("***************************************************");
+        System.out.println("");
     }
 }

@@ -2,6 +2,8 @@ package org.blindtester.generator.js;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.annotations.SerializedName;
+import com.google.gson.internal.LinkedTreeMap;
 import org.apache.commons.lang3.ClassUtils;
 import org.blindtester.generator.*;
 
@@ -78,18 +80,29 @@ public class JestGenerator extends Generator {
         sb.append("', () => {");
         sb.append(getLineSeparator());
         sb.append(Indent()+Indent()+"expect(");
-        sb.append(writeFunctionCall(functionName, c));
 
         Object output = c.getOutput();
 
         //primitive type
         if (ClassUtils.isPrimitiveOrWrapper(output.getClass())) {
+            sb.append(writeFunctionCall(functionName, c));
             sb.append(").toBe(");
             sb.append(output);
         }
-        else {
-            //object
+        else { // object
+            // if the calling function returns
+            // a buffer we need to convert it to json in the test
+            LinkedTreeMap mapOutput = (LinkedTreeMap) output;
+            if (mapOutput.containsKey("type") && mapOutput.get("type") == "Buffer") {
+                sb.append(writeFunctionCall(functionName, c)+".toJSON()");
+            }
+            else{
+                sb.append(writeFunctionCall(functionName, c));
+            }
+
             sb.append(").toMatchObject(");
+
+            // convert
             sb.append(this.gson.toJson(output));
         }
 
@@ -147,7 +160,7 @@ public class JestGenerator extends Generator {
     @Override
     public void writeTests(String path) {
         try {
-            FileWriter fileWriter = new FileWriter(Paths.get(path, "auto-"
+            FileWriter fileWriter = new FileWriter(Paths.get(path, "testblinder-"
                     + getTrace().getProjectName()
                     + ".test.js").toFile());
             BufferedWriter writer = new BufferedWriter(fileWriter);
