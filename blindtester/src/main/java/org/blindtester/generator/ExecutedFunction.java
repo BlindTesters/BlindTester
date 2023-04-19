@@ -1,8 +1,8 @@
 package org.blindtester.generator;
 
 import com.google.gson.annotations.SerializedName;
-import org.apache.commons.lang3.ClassUtils;
 import org.javatuples.Pair;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,6 +27,10 @@ public class ExecutedFunction {
         return Calls;
     }
 
+    public void setCalls(List<Call> calls) {
+        Calls = calls;
+    }
+
     public Pair<Boolean, List<Call>> getDistinctCalls() {
         List<Call> distinctCalls = new ArrayList<>();
         boolean sideEffect = false;
@@ -34,18 +38,17 @@ public class ExecutedFunction {
         for (Call c1 : getCalls()) {
             boolean found = false;
             for (Call c2 : distinctCalls) {
-                if(c1.equals(c2)){
+                if (c1.equals(c2)) {
                     found = true;
                     break;
-                }
-                else {
+                } else {
                     // check if inputs are equals but not the output to detect side effects
-                    if(c1.getInputs().equals(c2.getInputs()) && !c1.getOutput().equals(c2.getOutput())) {
+                    if (c1.getInputs().equals(c2.getInputs()) && !c1.getOutput().equals(c2.getOutput())) {
                         sideEffect = true;
                     }
                 }
             }
-            if(!found){
+            if (!found) {
                 distinctCalls.add(c1);
             }
         }
@@ -63,7 +66,7 @@ public class ExecutedFunction {
         List<Call> minimumSetCalls = new ArrayList<>();
 
         // cannot compute when we detected side effects
-        if(sideEffect){
+        if (sideEffect) {
             throw new Exception("Side effect detected => Cannot compute minimum set of calls");
         }
 
@@ -99,12 +102,8 @@ public class ExecutedFunction {
         return minimumSetCalls;
     }
 
-    public void keepDifferentInputsOutput(List<Call> calls){
+    public void keepDifferentInputsOutput(List<Call> calls) {
 
-    }
-
-    public void setCalls(List<Call> calls) {
-        Calls = calls;
     }
 
     @Override

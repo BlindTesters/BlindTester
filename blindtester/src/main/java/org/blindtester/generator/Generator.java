@@ -1,7 +1,6 @@
 package org.blindtester.generator;
 
 import org.javatuples.Pair;
-import java.io.IOException;
 import java.util.List;
 
 public abstract class Generator {
@@ -27,7 +26,7 @@ public abstract class Generator {
         return trace;
     }
 
-    public void makeReport(){
+    public void makeReport() {
         Trace t = getTrace();
 
         System.out.println("***************************************************");
@@ -45,7 +44,7 @@ public abstract class Generator {
 
             System.out.println("- Function " + f.getName() + " call(s) : " + f.getCalls().size());
 
-            if(sideEffect){
+            if (sideEffect) {
                 System.out.println("-- Side effect detected for this function");
             }
 

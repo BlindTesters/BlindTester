@@ -1,9 +1,7 @@
 package org.blindtester.generator;
 
 import com.google.gson.annotations.SerializedName;
-
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class Trace {
     @SerializedName("project_name")

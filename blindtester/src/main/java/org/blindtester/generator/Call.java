@@ -36,10 +36,10 @@ public class Call {
     public int hashCode() {
         int hash = 7;
         for (Object input : getInputs()) {
-            hash *= 31*input.hashCode();
+            hash *= 31 * input.hashCode();
         }
 
-        hash *= 31*getOutput().hashCode();
+        hash *= 31 * getOutput().hashCode();
 
         return hash;
     }
@@ -59,18 +59,18 @@ public class Call {
         List<Object> inputs = getInputs();
         int inputsSize = inputs != null ? inputs.size() : 0;
 
-        Call otherCall = (Call)other;
-        List<Object> otherInputs= otherCall.getInputs();
+        Call otherCall = (Call) other;
+        List<Object> otherInputs = otherCall.getInputs();
         int otherInputsSize = otherInputs != null ? otherInputs.size() : 0;
 
         // different size of input => Different objects
-        if(inputsSize != otherInputsSize){
+        if (inputsSize != otherInputsSize) {
             return false;
         }
 
         // compare all inputs
-        for (int i=0;i < inputsSize;i++){
-            if (!inputs.get(i).equals(otherInputs.get(i))){
+        for (int i = 0; i < inputsSize; i++) {
+            if (!inputs.get(i).equals(otherInputs.get(i))) {
                 return false;
             }
         }

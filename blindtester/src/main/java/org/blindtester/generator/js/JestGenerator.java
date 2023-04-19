@@ -6,6 +6,7 @@ import com.google.gson.internal.LinkedTreeMap;
 import org.apache.commons.lang3.ClassUtils;
 import org.blindtester.generator.*;
 import org.javatuples.Pair;
+
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -37,14 +38,14 @@ public class JestGenerator extends Generator {
 
     private String Indent() {
         StringBuilder sb = new StringBuilder();
-        for (int i=0;i<sizeIndent;i++){
+        for (int i = 0; i < sizeIndent; i++) {
             sb.append(charIndent);
         }
 
         return sb.toString();
     }
 
-    private String writeInput(Object input){
+    private String writeInput(Object input) {
         if (ClassUtils.isPrimitiveOrWrapper(input.getClass())) {
             return input.toString();
         }
@@ -59,10 +60,10 @@ public class JestGenerator extends Generator {
 
         List<Object> inputs = c.getInputs();
 
-        for(int i=0;i<inputs.size();i++) {
+        for (int i = 0; i < inputs.size(); i++) {
             input = writeInput(inputs.get(i));
             sb.append(input);
-            if (i < inputs.size()-1){
+            if (i < inputs.size() - 1) {
                 sb.append(",");
             }
         }
@@ -78,7 +79,7 @@ public class JestGenerator extends Generator {
         sb.append(createTestDescription(functionName, c));
         sb.append("', () => {");
         sb.append(getLineSeparator());
-        sb.append(Indent()+Indent()+"expect(");
+        sb.append(Indent() + Indent() + "expect(");
 
         Object output = c.getOutput();
 
@@ -87,15 +88,13 @@ public class JestGenerator extends Generator {
             sb.append(writeFunctionCall(functionName, c));
             sb.append(").toBe(");
             sb.append(output);
-        }
-        else { // object
+        } else { // object
             // if the calling function returns
             // a buffer we need to convert it to json in the test
             LinkedTreeMap mapOutput = (LinkedTreeMap) output;
             if (mapOutput.containsKey("type") && mapOutput.get("type").equals("Buffer")) {
-                sb.append(writeFunctionCall(functionName, c)+".toJSON()");
-            }
-            else{
+                sb.append(writeFunctionCall(functionName, c) + ".toJSON()");
+            } else {
                 sb.append(writeFunctionCall(functionName, c));
             }
 
@@ -130,6 +129,7 @@ public class JestGenerator extends Generator {
 
         return o.toString();
     }
+
     public String createTests() throws Exception {
         return createTests(true);
     }
@@ -152,7 +152,7 @@ public class JestGenerator extends Generator {
             Boolean sideEffect = resultDistinct.getValue0();
 
             // write all tests for all functions in trace
-            if(all) {
+            if (all) {
                 for (Call c : distinctCalls) {
                     if (c.getOutput() != null) {
                         sb.append(writeExpectTest(ef.getName(), c) + getLineSeparator());
@@ -160,8 +160,7 @@ public class JestGenerator extends Generator {
                         sb.append(writeNoErrorTest(ef.getName(), c) + getLineSeparator());
                     }
                 }
-            }
-            else { // write only the minimal set
+            } else { // write only the minimal set
                 for (Call c : ef.computeMinimumSetOfCalls()) {
                     if (c.getOutput() != null) {
                         sb.append(writeExpectTest(ef.getName(), c) + getLineSeparator());

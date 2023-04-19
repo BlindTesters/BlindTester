@@ -2,15 +2,12 @@ package org.blindtester;
 
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
-import org.blindtester.generator.js.JSUtil;
 import org.blindtester.generator.js.JestGenerator;
 import org.blindtester.generator.Trace;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.nio.file.Paths;
 
 
 public class Main {
@@ -37,26 +34,26 @@ public class Main {
         return sb.toString();
     }
 
-    public static void help(){
+    public static void help() {
         System.out.println("java -jar testbuilder.jar GENERATOR trace.json");
     }
 
     public static void main(String[] args) throws IOException {
         // check that user entered a file path
-        if(args.length != 2){
+        if (args.length != 2) {
             System.out.println("Please choose one generator and one json trace file to analyze");
             help();
             System.exit(0);
         }
 
-        try{
+        try {
             // get chosen generator
             String generator = args[0].toLowerCase();
 
             // get trace.json path
             String tracePath = args[1];
 
-            switch(generator) {
+            switch (generator) {
                 case "jest":
                     // get trace from json file and create a test generator
                     Gson gson = new Gson();
@@ -74,8 +71,7 @@ public class Main {
                     System.out.println("Generator not found");
                     break;
             }
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             System.out.println("A problem occurred during testing : " + e);
         }
     }
