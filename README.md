@@ -66,7 +66,7 @@ $ mvn clean compile assembly:single
 ### Usage 
 
 ``` sh
-$ java -jar path_to_jar/blindtester-1.0-SNAPSHOT-jar-with-dependencies.jar GENERATOR path_to_trace/trace.json
+$ java -jar path_to_jar/blindtester.jar GENERATOR path_to_trace/trace.json
 ```
 
 Where `GENERATOR` is the name of the generator that target a test system.
@@ -76,7 +76,7 @@ Where `GENERATOR` is the name of the generator that target a test system.
 #### Generate some tests for Jest
 
 ``` sh
-$ java -jar path_to_jar/blindtester-1.0-SNAPSHOT-jar-with-dependencies.jar jest path_to_trace/trace.json
+$ java -jar path_to_jar/blindtester.jar jest path_to_trace/trace.json
 ```
 
 #### Execute tests with Jest
