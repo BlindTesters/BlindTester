@@ -97,7 +97,7 @@ All examples are available in the [examples directory](examples/)
 
 ### Moment - Simple example
 
-
+Coming soon...
 
 ### Crypto - Advanced example
 
