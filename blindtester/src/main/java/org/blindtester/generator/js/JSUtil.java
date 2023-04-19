@@ -20,8 +20,21 @@ public class JSUtil {
     }
 
     public static JSType getType(Object o) {
+        // Check primitive type
         if (ClassUtils.isPrimitiveOrWrapper(o.getClass())) {
-            System.out.println(ClassUtils.getName(o.getClass()));
+            switch (ClassUtils.getName(o.getClass())){
+                case "java.lang.Integer":
+                    return JSType.NUMBER;
+                case "java.lang.Boolean":
+                    return JSType.BOOLEAN;
+                default:
+                    return JSType.OBJECT;
+            }
+        }
+
+        // Check objects
+        if(ClassUtils.getName(o).equals("java.lang.String")){
+            return JSType.STRING;
         }
 
         return JSType.OBJECT;
