@@ -2,6 +2,7 @@ package org.blindtester;
 
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
+import org.blindtester.generator.js.JSUtil;
 import org.blindtester.generator.js.JestGenerator;
 import org.blindtester.generator.Trace;
 
@@ -42,6 +43,9 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
         // check that user entered a file path
+
+        JSUtil.equalType(1, true);
+
         if(args.length != 2){
             System.out.println("Please choose one generator and one json trace file to analyze");
             help();

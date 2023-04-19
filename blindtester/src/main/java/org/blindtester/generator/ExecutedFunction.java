@@ -1,6 +1,7 @@
 package org.blindtester.generator;
 
 import com.google.gson.annotations.SerializedName;
+import org.apache.commons.lang3.ClassUtils;
 import org.javatuples.Pair;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -66,24 +67,41 @@ public class ExecutedFunction {
             throw new Exception("Side effect detected => Cannot compute minimum set of calls");
         }
 
-        // Compute the number of arguments for each call
-        Map<Integer, Call> mapFuncArgs = new HashMap<>();
-        for (Call c1 : getCalls()) {
+        // Compute and store the number of arguments for each call
+        Map<Integer, List<Call>> mapFuncArgs = new HashMap<>();
+
+        for (Call c1 : distinctCalls) {
             int countArgs = c1.getInputs().size();
-            mapFuncArgs.put(countArgs, c1); // put last call for now
+
+            if (!mapFuncArgs.containsKey(countArgs)) {
+                mapFuncArgs.put(countArgs, new ArrayList<Call>());
+            }
+
+            mapFuncArgs.get(countArgs).add(c1); // put last call for now
         }
 
         // type of inputs and output
         // for each number of args we check that if they have the same type
-        // TODO
-
+        // keep cleaned list
         for (var entry : mapFuncArgs.entrySet()) {
-            minimumSetCalls.add(entry.getValue());
+            List<Call> argsCalls = entry.getValue();
+            keepDifferentInputsOutput(argsCalls);
+        }
+
+        // keep cleaned list
+        for (var entry : mapFuncArgs.entrySet()) {
+            List<Call> calls = entry.getValue();
+            for (Call c : calls) {
+                minimumSetCalls.add(c);
+            }
         }
 
         return minimumSetCalls;
     }
 
+    public void keepDifferentInputsOutput(List<Call> calls){
+
+    }
 
     public void setCalls(List<Call> calls) {
         Calls = calls;

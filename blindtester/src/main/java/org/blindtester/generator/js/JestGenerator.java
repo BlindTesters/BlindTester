@@ -2,12 +2,10 @@ package org.blindtester.generator.js;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.annotations.SerializedName;
 import com.google.gson.internal.LinkedTreeMap;
 import org.apache.commons.lang3.ClassUtils;
 import org.blindtester.generator.*;
 import org.javatuples.Pair;
-
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;

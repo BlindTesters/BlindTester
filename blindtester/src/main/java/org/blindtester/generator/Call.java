@@ -45,22 +45,22 @@ public class Call {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
+    public boolean equals(Object other) {
+        if (this == other)
             return true;
 
-        if (obj == null)
+        if (other == null)
             return false;
 
-        if (getClass() != obj.getClass())
+        if (getClass() != other.getClass())
             return false;
 
         // check inputs
         List<Object> inputs = getInputs();
         int inputsSize = inputs != null ? inputs.size() : 0;
 
-        Call other = (Call)obj;
-        List<Object> otherInputs= other.getInputs();
+        Call otherCall = (Call)other;
+        List<Object> otherInputs= otherCall.getInputs();
         int otherInputsSize = otherInputs != null ? otherInputs.size() : 0;
 
         // different size of input => Different objects
@@ -77,7 +77,7 @@ public class Call {
 
         // check output
         Object output = getOutput();
-        if (!output.equals(other.getOutput())) {
+        if (!output.equals(otherCall.getOutput())) {
             return false;
         }
 
