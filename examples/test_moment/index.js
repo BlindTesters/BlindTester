@@ -1,0 +1,13 @@
+// Inject a wrapper around the function in the class we want to inspect.
+const JSpector = require('../../JSpector/jspector');
+
+const lib_name = 'moment';
+const moment = new JSpector(require(lib_name), lib_name, 'format', __filename, 'SSE23-moment').get_library();
+
+const momentInst = moment();
+
+console.log(momentInst.format('MMMM Do YYYY, h:mm:ss a'));
+console.log(momentInst.format('dddd'));
+console.log(momentInst.format("MMM Do YY"));
+console.log(momentInst.format('YYYY [escaped] YYYY'));
+console.log(momentInst.format());

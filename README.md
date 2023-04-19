@@ -1,19 +1,25 @@
-# SSE23-Project - Software Engineering Seminar - 2023
+# BlindTester
 
-## Automatic tests generation from execution
+<img src="https://creazilla-store.fra1.digitaloceanspaces.com/emojis/46374/sunglasses-emoji-clipart-md.png" width="100" height="100">
 
-![Schema](docs/images/schema.png)
+Project for the Software Engineering Seminar 2023 at UniBE
 
-## NodeJS Execution Analyzer
+The goal of this project is to generate automatically tests from runtime execution for a specific function.
 
-[Analyzer](node_execution_analyzer/)
+## Dependencies
 
-## Tests generator
+- Install [NodeJS](https://nodejs.org/)
 
-[Generator](tests_generator/)
+- Install [Open JDK 19](https://jdk.java.net/19/)
 
-## Proof of concept
+- Install [Maven](https://maven.apache.org/)
 
-[PoC Runtime Analysis](some_proofs_of_concepts/poc_runtime/)
+## Compile BlindTester
 
-[PoC Wrapper](some_proofs_of_concepts/poc_wrapper/)
+
+
+## Get trace from NodeJS app execution with JSpector
+
+
+
+## Generate some tests with BlindTester
