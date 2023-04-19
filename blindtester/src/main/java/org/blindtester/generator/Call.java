@@ -35,8 +35,7 @@ public class Call {
     @Override
     public int hashCode() {
         int hash = 7;
-        for (Object input : getInputs()
-             ) {
+        for (Object input : getInputs()) {
             hash *= 31*input.hashCode();
         }
 
@@ -61,10 +60,17 @@ public class Call {
         int inputsSize = inputs != null ? inputs.size() : 0;
 
         Call other = (Call)obj;
-        List<Object> otherList = other.getInputs();
+        List<Object> otherInputs= other.getInputs();
+        int otherInputsSize = otherInputs != null ? otherInputs.size() : 0;
 
+        // different size of input => Different objects
+        if(inputsSize != otherInputsSize){
+            return false;
+        }
+
+        // compare all inputs
         for (int i=0;i < inputsSize;i++){
-            if (!inputs.get(i).equals(otherList.get(i))){
+            if (!inputs.get(i).equals(otherInputs.get(i))){
                 return false;
             }
         }

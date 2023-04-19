@@ -1,8 +1,8 @@
 package org.blindtester.generator;
 
+import org.javatuples.Pair;
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public abstract class Generator {
     private final Trace trace;
@@ -13,9 +13,11 @@ public abstract class Generator {
         this.lineSeparator = lineSeparator;
     }
 
-    public abstract String createTests();
+    public abstract String createTests() throws Exception;
 
-    public abstract void writeTests(String path) throws IOException;
+    public abstract String createTests(boolean all) throws Exception;
+
+    public abstract void writeTests(String path) throws Exception;
 
     public String getLineSeparator() {
         return lineSeparator;
@@ -37,9 +39,16 @@ public abstract class Generator {
             List<Call> calls = f.getCalls();
 
             // get distinct calls
-            List<Call> distinctCalls = f.getDistinctCalls();
+            Pair<Boolean, List<Call>> resultDistinct = f.getDistinctCalls();
+            List<Call> distinctCalls = resultDistinct.getValue1();
+            Boolean sideEffect = resultDistinct.getValue0();
 
             System.out.println("- Function " + f.getName() + " call(s) : " + f.getCalls().size());
+
+            if(sideEffect){
+                System.out.println("-- Side effect detected for this function");
+            }
+
             System.out.println("-- Distinct call(s) : " + distinctCalls.size());
         }
         System.out.println("***************************************************");

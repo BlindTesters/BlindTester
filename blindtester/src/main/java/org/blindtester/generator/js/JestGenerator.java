@@ -6,6 +6,7 @@ import com.google.gson.annotations.SerializedName;
 import com.google.gson.internal.LinkedTreeMap;
 import org.apache.commons.lang3.ClassUtils;
 import org.blindtester.generator.*;
+import org.javatuples.Pair;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -131,8 +132,11 @@ public class JestGenerator extends Generator {
 
         return o.toString();
     }
+    public String createTests() throws Exception {
+        return createTests(true);
+    }
 
-    public String createTests() {
+    public String createTests(boolean all) throws Exception {
         StringBuilder sb = new StringBuilder();
         Trace t = getTrace();
 
@@ -144,11 +148,28 @@ public class JestGenerator extends Generator {
         sb.append("describe('blindtester-" + t.getProjectName() + "', () => {" + getLineSeparator());
 
         for (ExecutedFunction ef : t.getExecutedFunctions()) {
-            for (Call c : ef.getDistinctCalls()) {
-                if (c.getOutput() != null) {
-                    sb.append(writeExpectTest(ef.getName(), c) + getLineSeparator());
-                } else {
-                    sb.append(writeNoErrorTest(ef.getName(), c) + getLineSeparator());
+            // get all distinct calls
+            Pair<Boolean, List<Call>> resultDistinct = ef.getDistinctCalls();
+            List<Call> distinctCalls = resultDistinct.getValue1();
+            Boolean sideEffect = resultDistinct.getValue0();
+
+            // write all tests for all functions in trace
+            if(all) {
+                for (Call c : distinctCalls) {
+                    if (c.getOutput() != null) {
+                        sb.append(writeExpectTest(ef.getName(), c) + getLineSeparator());
+                    } else {
+                        sb.append(writeNoErrorTest(ef.getName(), c) + getLineSeparator());
+                    }
+                }
+            }
+            else { // write only the minimal set
+                for (Call c : ef.computeMinimumSetOfCalls()) {
+                    if (c.getOutput() != null) {
+                        sb.append(writeExpectTest(ef.getName(), c) + getLineSeparator());
+                    } else {
+                        sb.append(writeNoErrorTest(ef.getName(), c) + getLineSeparator());
+                    }
                 }
             }
         }
@@ -158,16 +179,18 @@ public class JestGenerator extends Generator {
     }
 
     @Override
-    public void writeTests(String path) {
+    public void writeTests(String path) throws Exception {
         try {
             FileWriter fileWriter = new FileWriter(Paths.get(path, "testblinder-"
                     + getTrace().getProjectName()
                     + ".test.js").toFile());
             BufferedWriter writer = new BufferedWriter(fileWriter);
-            writer.write(createTests());
+            writer.write(createTests(false));
             writer.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
+        } catch (Exception e) {
+            throw new Exception(e);
         }
 
         System.out.println("Tests generated in : " + path);
