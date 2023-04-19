@@ -103,14 +103,14 @@ Compute the difference of two dates for two examples.
 
 <p align="center">
     <img 
-    src="./docs/images/moment_jspector">
+    src="./docs/images/moment_jspector.png">
 </p>
 
 2. Start BlindTester on the trace
 
 <p align="center">
     <img 
-    src="./docs/images/moment_report">
+    src="./docs/images/moment_report.png">
 </p>
 
 Coming soon...
@@ -148,6 +148,13 @@ Generate 101 function calls to hash a word of which two are duplicates.
 </p>
 
 ### D3 - Advanced example
+
+Create a png file that contains small random rectangle for each pixels.
+
+<p align="center">
+    <img 
+    src="./docs/images/d3_output.png">
+</p>
 
 Coming soon...
 
