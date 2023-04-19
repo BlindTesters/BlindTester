@@ -97,11 +97,29 @@ All examples are available in the [examples directory](examples/)
 
 ### Moment - Simple example
 
+Compute the difference of two dates for two examples.
+
+1. JSpector injection
+
+<p align="center">
+    <img 
+    src="./docs/images/moment_jspector">
+</p>
+
+2. Start BlindTester on the trace
+
+<p align="center">
+    <img 
+    src="./docs/images/moment_report">
+</p>
+
 Coming soon...
 
 ### Crypto - Advanced example
 
-1. Inject JSpector in your code
+Generate 101 function calls to hash a word of which two are duplicates.
+
+1. JSpector injection
 
 <p align="center">
     <img 
@@ -115,7 +133,7 @@ Coming soon...
     src="./docs/images/crypto_report.png">
 </p>
 
-3. Look at generated code
+3. Generated tests
 
 <p align="center">
     <img 
