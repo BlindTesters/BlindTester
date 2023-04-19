@@ -2,10 +2,9 @@
 
 <img 
     src="https://creazilla-store.fra1.digitaloceanspaces.com/emojis/46374/sunglasses-emoji-clipart-md.png" 
-    width="100" 
-    height="100"
-    style="display: block; margin: 0 auto"
-    >
+    width="200" 
+    height="200"
+    align="center">
 
 Project for the Software Engineering Seminar 2023 at UniBE
 
@@ -19,14 +18,13 @@ The goal of this project is to generate automatically tests from runtime executi
 
 - Install [Maven](https://maven.apache.org/)
 
-
 ## Get trace from execution with Inspectors
 
 <img 
     src="https://creazilla-store.fra1.digitaloceanspaces.com/emojis/48141/detective-emoji-clipart-md.png" 
     width="100" 
     height="100"
-    style="display: block; margin: 0 auto">
+    align="center">
 
 
 ### JSpector - Get trace from a NodeJS app 
@@ -42,6 +40,8 @@ const lib_name = 'LIB_NAME';
 // replace FUNCTION_NAME with the name of your function to test
 const crypto = new JSpector(require(lib_name), lib_name, 'FUNCTION_NAME', __filename, 'SSE23-crypto').get_library();
 ```
+
+*Please note that the trace contains the path of the project. Please restart JSpector or edit the trace.json file if your project changed path*
 
 ## BlindTester
 
@@ -79,7 +79,7 @@ Coming soon...
 
 All rights reserved.
 
-Images are both created by JoyPixels from creazilla :
+Images are both under CCA 4.0 and created by *JoyPixels* from [creazilla](https://creazilla.com) :
 
 - [Glasses](https://creazilla.com/nodes/46374-sunglasses-emoji-clipart)
 
