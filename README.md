@@ -153,6 +153,8 @@ Create a png file that contains small random rectangle for each pixels.
 
 <p align="center">
     <img 
+    width="200" 
+    height="200"
     src="./docs/images/d3_output.png">
 </p>
 
