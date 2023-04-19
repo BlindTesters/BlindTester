@@ -1,10 +1,12 @@
 # BlindTester
 
-<img 
+<p align="center">
+    <img 
     src="https://creazilla-store.fra1.digitaloceanspaces.com/emojis/46374/sunglasses-emoji-clipart-md.png" 
     width="200" 
-    height="200"
-    align="center">
+    height="200">
+</p>
+
 
 Project for the Software Engineering Seminar 2023 at UniBE
 
@@ -20,12 +22,12 @@ The goal of this project is to generate automatically tests from runtime executi
 
 ## Get trace from execution with Inspectors
 
-<img 
-    src="https://creazilla-store.fra1.digitaloceanspaces.com/emojis/48141/detective-emoji-clipart-md.png" 
-    width="100" 
-    height="100"
-    align="center">
-
+<p align="center">
+    <img 
+        src="https://creazilla-store.fra1.digitaloceanspaces.com/emojis/48141/detective-emoji-clipart-md.png" 
+        width="100" 
+        height="100">
+</p>
 
 ### JSpector - Get trace from a NodeJS app 
 
