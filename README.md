@@ -71,7 +71,7 @@ $ java -jar path_to_jar/blindtester-1.0-SNAPSHOT-jar-with-dependencies.jar GENER
 
 Where `GENERATOR` is the name of the generator that target a test system.
 
-*At this time, only Jest is implemented in BlindTester*
+*At this time, only a generator for Jest is implemented in BlindTester*
 
 #### Generate some tests for Jest
 
@@ -92,6 +92,44 @@ $ ./node_modules/jest/bin/jest.js
 ```
 
 ## Example
+
+All examples are available in the [examples directory](examples/)
+
+### Moment - Simple example
+
+
+
+### Crypto - Advanced example
+
+1. Inject JSpector in your code
+
+<p align="center">
+    <img 
+    src="./docs/images/crypto_jspector.png">
+</p>
+
+2. Start BlindTester on the trace
+
+<p align="center">
+    <img 
+    src="./docs/images/crypto_report.png">
+</p>
+
+3. Look at generated code
+
+<p align="center">
+    <img 
+    src="./docs/images/crypto_generation.png">
+</p>
+
+4. Start Jest on automatically generated tests
+
+<p align="center">
+    <img 
+    src="./docs/images/crypto_jest.png">
+</p>
+
+### D3 - Advanced example
 
 Coming soon...
 

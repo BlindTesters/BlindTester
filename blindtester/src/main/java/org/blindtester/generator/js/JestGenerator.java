@@ -93,7 +93,7 @@ public class JestGenerator extends Generator {
             // if the calling function returns
             // a buffer we need to convert it to json in the test
             LinkedTreeMap mapOutput = (LinkedTreeMap) output;
-            if (mapOutput.containsKey("type") && mapOutput.get("type") == "Buffer") {
+            if (mapOutput.containsKey("type") && mapOutput.get("type").equals("Buffer")) {
                 sb.append(writeFunctionCall(functionName, c)+".toJSON()");
             }
             else{
@@ -144,7 +144,7 @@ public class JestGenerator extends Generator {
         sb.append("describe('blindtester-" + t.getProjectName() + "', () => {" + getLineSeparator());
 
         for (ExecutedFunction ef : t.getExecutedFunctions()) {
-            for (Call c : ef.getCalls()) {
+            for (Call c : ef.getDistinctCalls()) {
                 if (c.getOutput() != null) {
                     sb.append(writeExpectTest(ef.getName(), c) + getLineSeparator());
                 } else {

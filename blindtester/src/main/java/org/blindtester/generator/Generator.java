@@ -37,7 +37,7 @@ public abstract class Generator {
             List<Call> calls = f.getCalls();
 
             // get distinct calls
-            List<Call> distinctCalls = calls.stream().distinct().collect(Collectors.toList());
+            List<Call> distinctCalls = f.getDistinctCalls();
 
             System.out.println("- Function " + f.getName() + " call(s) : " + f.getCalls().size());
             System.out.println("-- Distinct call(s) : " + distinctCalls.size());

@@ -3,6 +3,7 @@ package org.blindtester.generator;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ExecutedFunction {
     @SerializedName("name")
@@ -21,6 +22,12 @@ public class ExecutedFunction {
 
     public List<Call> getCalls() {
         return Calls;
+    }
+
+    public List<Call> getDistinctCalls() {
+        // get distinct calls
+        List<Call> distinctCalls = this.getCalls().stream().distinct().collect(Collectors.toList());
+        return distinctCalls;
     }
 
     public void setCalls(List<Call> calls) {
