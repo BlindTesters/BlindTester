@@ -1,5 +1,6 @@
 ### output files ###
 trace.json
+congress.svg
 
 blindtester-*test.js
 

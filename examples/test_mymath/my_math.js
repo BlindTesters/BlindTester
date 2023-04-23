@@ -2,6 +2,10 @@ function sum(a, b, c){
   return a+b+c
 }
 
+function diff (a, b, c) {
+  return a-b-c;
+}
+
 function doubler(n) {
   return 2*n;
 }
@@ -29,4 +33,4 @@ function addVec(v1, v2) {
   return new Vector(v1.x + v2.x, v1.y + v2.y);
 }
 
-module.exports = { Vector, addVec, inc, sum, div1, div2, doubler }
+module.exports = { Vector, addVec, inc, sum, diff, div1, div2, doubler }

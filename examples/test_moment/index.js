@@ -1,13 +1,13 @@
 // Inject a wrapper around the function in the class we want to inspect.
 const JSpector = require('../../JSpector/jspector');
-
 const lib_name = 'moment';
-
-const moment = new JSpector(require(lib_name)
-                      , lib_name
-                      , 'add'
-                      , __filename
-                      , 'SSE23-moment').get_library();
+const moment = new JSpector(
+  require(lib_name),
+  lib_name,
+  'add',
+  __filename,
+  'SSE23-moment'
+).get_library();
 
 var date1 = moment('2023-10-01 00:00:00').add(1, 'days')
 console.log(date1)

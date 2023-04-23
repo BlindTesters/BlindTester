@@ -1,11 +1,17 @@
 // Inject a wrapper around the function in the class we want to inspect.
 const JSpector = require('../../JSpector/jspector');
-
 const lib_name = '@koa/router';
-const Router = new JSpector(require(lib_name), lib_name, 'get', __filename, 'SSE23-koa').get_library();
-const Koa = require('koa');
+const Router = new JSpector(
+    require(lib_name),
+    lib_name,
+    'get',
+    __filename,
+    'SSE23-koa'
+  ).get_library();
 
-const { sum, diff } = require('./functions');
+// other imports
+const Koa = require('koa');
+const { sum, diff } = require('../test_mymath/my_math');
 
 const app = new Koa();
 const router = new Router();

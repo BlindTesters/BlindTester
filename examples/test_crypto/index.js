@@ -2,11 +2,13 @@
 const JSpector = require('../../JSpector/jspector');
 
 const lib_name = 'crypto';
-const crypto = new JSpector(require(lib_name)
-                            , lib_name
-                            , 'pbkdf2Sync'
-                            , __filename
-                            , 'SSE23-crypto').get_library();
+const crypto = new JSpector(
+  require(lib_name),
+  lib_name,
+  'pbkdf2Sync',
+  __filename,
+  'SSE23-crypto'
+).get_library();
 
 // compute a hash with salt set to "salt0"
 let hash = crypto.pbkdf2Sync("seg-2023", "salt0", 1000, 64, "sha512");

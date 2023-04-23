@@ -4,7 +4,7 @@ const path = require('path');
 const walk = require('acorn-walk');
 
 
-class Injector {
+class JSpector {
   /**
    * 
    * @param {*} library The library in which the function to trace is located.
@@ -23,7 +23,10 @@ class Injector {
     this.library = library;
     this.library_name = library_name;  // TODO: change this to extract directly from library.
     this.object_name = this.library_name.split('/').pop();  // TODO: change this to extract directly from library.
+    // Compute the function name and path (function might be in a submodule)
     this.fn = fn;
+    this.pathFn = this.fn.split('.').slice(0, -1);
+    this.fnName = this.fn.split('.').pop();
     this.main_file = main_file;
     this.project_name = project_name;
     this.output_file_name = output_file_name;
@@ -73,7 +76,7 @@ class Injector {
             // regular imports
             else {
               // Ignore undefined variables as well as this library.
-              if (variableName != undefined && !requiredModule.endsWith('injector.js')) {
+              if (variableName != undefined && (!requiredModule.endsWith('jspector') && !requiredModule.endsWith('jspector.js'))) {
                 outerThis.REQUIRES.push({
                   'include': `const ${variableName} = require('${requiredModule}');`
                 });
@@ -146,16 +149,29 @@ class Injector {
   }
 
   /**
+   * This function will return the path to the target function.
+   * @returns The path to the target function.
+   */
+  get_library_path() {
+    let lib = this.library;
+    this.pathFn.forEach(path => {
+      lib = lib[path];
+    });
+    return lib;
+  }
+
+  /**
    * This function will wrap the target function and keep a trace of the
    * inputs and outputs.
    */
   wrapFunction() {
     // Keep a reference to the original function and the current "this".
     let originalFunction = undefined;
-    if (this.library.prototype === undefined) {
-      originalFunction = this.library[this.fn];
+    let libPath = this.get_library_path()
+    if (libPath.prototype === undefined) {
+      originalFunction = libPath[this.fnName];
     } else {
-      originalFunction = this.library.prototype[this.fn];
+      originalFunction = libPath.prototype[this.fnName];
     }
     const outerThis = this;
     const newFunction = function () {
@@ -172,21 +188,22 @@ class Injector {
 
     // Wrap the function depending on the library workflow.
     let wrapped = false;
-    if (this.library.prototype === undefined) {
-      if (this.library[this.fn].set === undefined) {
+    if (libPath.prototype === undefined) {
+      if (libPath[this.fnName].set === undefined) {
         // Handle libraries that do not use a "setter" property to define
         // the function we'd like to wrap.
-        this.library = {...this.library, [this.fn]: newFunction}
+        libPath = {...libPath, [this.fnName]: newFunction};
+        this.library = libPath;
         wrapped = true;
       } else{
         // Handle libraries that use a "setter" property to define the
         // function we'd like to wrap.
-        this.library[this.fn] = newFunction;
+        libPath[this.fnName] = newFunction;
         wrapped = true;
       }
     } else {
       // Handle simplest case libraries.
-      this.library.prototype[this.fn] = newFunction;
+      libPath.prototype[this.fnName] = newFunction;
       wrapped = true;
     }
 
@@ -206,4 +223,4 @@ class Injector {
   }
 }
 
-module.exports = Injector;
+module.exports = JSpector;
