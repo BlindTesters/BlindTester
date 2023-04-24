@@ -1,4 +1,3 @@
-const JSpector = require('../../JSpector/jspector');
 const my_math = require('./my_math');
 
 describe('blindtester-SSE23-mymath', () => {

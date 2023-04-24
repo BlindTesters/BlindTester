@@ -46,7 +46,7 @@ public class JestGenerator extends Generator {
     }
 
     private String writeInput(Object input) {
-        if (ClassUtils.isPrimitiveOrWrapper(input.getClass())) {
+        if (input != null && ClassUtils.isPrimitiveOrWrapper(input.getClass())) {
             return input.toString();
         }
 
@@ -182,7 +182,7 @@ public class JestGenerator extends Generator {
                     + getTrace().getProjectName()
                     + ".test.js").toFile());
             BufferedWriter writer = new BufferedWriter(fileWriter);
-            writer.write(createTests(false));
+            writer.write(createTests(true));
             writer.close();
         } catch (IOException e) {
             throw new RuntimeException(e);

@@ -1,6 +1,7 @@
 package org.blindtester.generator;
 
 import com.google.gson.annotations.SerializedName;
+import org.blindtester.generator.js.JSUtil;
 import org.javatuples.Pair;
 
 import java.util.ArrayList;
@@ -86,6 +87,7 @@ public class ExecutedFunction {
         // type of inputs and output
         // for each number of args we check that if they have the same type
         // keep cleaned list
+
         for (var entry : mapFuncArgs.entrySet()) {
             List<Call> argsCalls = entry.getValue();
             keepDifferentInputsOutput(argsCalls);
@@ -103,7 +105,26 @@ public class ExecutedFunction {
     }
 
     public void keepDifferentInputsOutput(List<Call> calls) {
+        List<Call> differentCalls = new ArrayList<>();
 
+        for(Call c1 : calls) {
+            boolean same = true;
+
+            // check inputs
+            for(Call c2 : differentCalls) {
+                if(!JSUtil.compareInputs(c1.getInputs(), c2.getInputs()) || !JSUtil.equalType(c1.getOutput(), c2.getOutput())) {
+                    same=false;
+                    break;
+                }
+            }
+
+            if(!same || differentCalls.size() == 0) {
+                differentCalls.add(c1);
+            }
+        }
+
+        calls.clear();
+        calls = differentCalls;
     }
 
     @Override

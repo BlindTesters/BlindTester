@@ -73,6 +73,7 @@ public class Main {
             }
         } catch (Exception e) {
             System.out.println("A problem occurred during testing : " + e);
+            e.printStackTrace();
         }
     }
 }
