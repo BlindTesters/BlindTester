@@ -2,13 +2,11 @@
 const JSpector = require('../../JSpector/jspector');
 
 // We will inspect the d3 library.
-const lib_name = 'd3';
 const d3 = new JSpector(
-  require(lib_name),
-  lib_name,
+  'd3',
   'selection.attr',  // The function we want to inspect is nested in a submodule.
   __filename,
-  output_file_name='SSE23-d3node'
+  'SSE23-d3node'
 ).get_library();
 
 // This example relies on the one provided in the d3-node library documentation

@@ -1,36 +1,40 @@
 const acorn = require('acorn');
 const fs = require('fs');
 const path = require('path');
+const { createRequire } = require('module');
 const walk = require('acorn-walk');
 
 
 class JSpector {
   /**
    * 
-   * @param {*} library The library in which the function to trace is located.
-   * @param {*} library_name The library name (WIP)
+   * @param {*} library_name The library name in which the function to trace is located.
    * @param {*} fn The function to trace.
    * @param {*} main_file The main file of the project.
    * @param {*} project_name The name of the project.
    * @param {*} [output_file_name] The name of the output file (default='trace.json').
    */
-  constructor(library, library_name, fn, main_file, project_name, verbose=false, output_file_name='trace.json') {
+  constructor(library_name, fn, main_file, project_name, verbose=false, output_file_name='trace.json') {
     // This will contain the trace.
     this.TRACE = {};
     // This will contain all the required modules in the main file.
     this.REQUIRES = [];
-    // Assign the parameters.
-    this.library = library;
-    this.library_name = library_name;  // TODO: change this to extract directly from library.
-    this.object_name = this.library_name.split('/').pop();  // TODO: change this to extract directly from library.
-    // Compute the function name and path (function might be in a submodule)
-    this.fn = fn;
-    this.pathFn = this.fn.split('.').slice(0, -1);
-    this.fnName = this.fn.split('.').pop();
+
+    // Set variables useful for trace generation.
     this.main_file = main_file;
     this.project_name = project_name;
     this.output_file_name = output_file_name;
     this.verbose = verbose;
+
+    // Import the desired library.
+    this.library_name = library_name;
+    this.import_name = this.library_name.split('/').pop();
+    this.library = this.requireLibrary(this.library_name)
+
+    // Compute the function name and path (function might be in a submodule)
+    this.fn = fn;
+    this.pathFn = this.fn.split('.').slice(0, -1);
+    this.fnName = this.fn.split('.').pop();
 
     // Extract the requires from the main file.
     this.extractRequires();
@@ -49,6 +53,16 @@ class JSpector {
       this.writeTrace();
       console.log(`Trace saved. Exit...`);
     });
+  }
+
+  /**
+   * This function will load the desired function from the main_file directory by
+   * using a require function created with the main_file directory as base.
+   * @returns the library.
+   */
+  requireLibrary() {
+    const requireUtil = createRequire(`${path.dirname(this.main_file)}/`);
+    return requireUtil(this.library_name);
   }
 
   /**
@@ -87,9 +101,8 @@ class JSpector {
       }
     });
     // Add the inspected library to the requires.
-    // TODO: check this and improved if needed (since this var might not have the same name in the main file)
     this.REQUIRES.push({
-      'include': `const ${this.object_name} = require('${this.library_name}');`
+      'include': `const ${this.import_name} = require('${this.library_name}');`
     });
   }
 
@@ -101,7 +114,7 @@ class JSpector {
    */
   addTrace(_inputs, _output) {
     // Build the function name.
-    const funcName = `${this.object_name}.${this.fn}`;
+    const funcName = `${this.import_name}.${this.fn}`;
 
     // Initialize the array if it does not exist yet.
     if (this.TRACE[funcName] === undefined) {
