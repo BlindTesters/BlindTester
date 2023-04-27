@@ -89,13 +89,22 @@ public class JestGenerator extends Generator {
             sb.append(").toBe(");
             sb.append(output);
         } else { // object
-            // if the calling function returns
-            // a buffer we need to convert it to json in the test
-            LinkedTreeMap mapOutput = (LinkedTreeMap) output;
-            if (mapOutput.containsKey("type") && mapOutput.get("type").equals("Buffer")) {
-                sb.append(writeFunctionCall(functionName, c) + ".toJSON()");
-            } else {
+            if(output instanceof String) {
                 sb.append(writeFunctionCall(functionName, c));
+            }
+            else {
+                // if the calling function returns
+                // a buffer we need to convert it to json in the test
+                LinkedTreeMap mapOutput = (LinkedTreeMap) output;
+                if (mapOutput.containsKey("type") && mapOutput.get("type").equals("Buffer")) {
+                    sb.append(writeFunctionCall(functionName, c) + ".toJSON()");
+                } else {
+                    sb.append("JSON.parse(");
+                    sb.append("JSON.stringify(");
+                    sb.append(writeFunctionCall(functionName, c));
+                    sb.append(")");
+                    sb.append(")");
+                }
             }
 
             sb.append(").toMatchObject(");

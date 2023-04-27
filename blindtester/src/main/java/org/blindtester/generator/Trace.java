@@ -13,6 +13,9 @@ public class Trace {
     @SerializedName("main_file")
     private String MainFile;
 
+    @SerializedName("caller")
+    private String Caller;
+
     @SerializedName("requires")
     private List<Require> Requires;
 
