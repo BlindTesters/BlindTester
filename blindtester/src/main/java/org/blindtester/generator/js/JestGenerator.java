@@ -161,7 +161,8 @@ public class JestGenerator extends Generator {
                     }
                 }
             } else { // write only the minimal set
-                for (Call c : ef.computeMinimumSetOfCalls()) {
+                List<Call> calls = ef.computeMinimumSetOfCalls();
+                for (Call c : calls) {
                     if (c.getOutput() != null) {
                         sb.append(writeExpectTest(ef.getName(), c) + getLineSeparator());
                     } else {
@@ -182,7 +183,7 @@ public class JestGenerator extends Generator {
                     + getTrace().getProjectName()
                     + ".test.js").toFile());
             BufferedWriter writer = new BufferedWriter(fileWriter);
-            writer.write(createTests(true));
+            writer.write(createTests(false));
             writer.close();
         } catch (IOException e) {
             throw new RuntimeException(e);

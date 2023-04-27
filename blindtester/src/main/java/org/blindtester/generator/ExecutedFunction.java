@@ -89,8 +89,7 @@ public class ExecutedFunction {
         // keep cleaned list
 
         for (var entry : mapFuncArgs.entrySet()) {
-            List<Call> argsCalls = entry.getValue();
-            keepDifferentInputsOutput(argsCalls);
+            mapFuncArgs.put(entry.getKey(), keepDifferentInputsOutput(entry.getValue()) );
         }
 
         // keep cleaned list
@@ -104,7 +103,7 @@ public class ExecutedFunction {
         return minimumSetCalls;
     }
 
-    public void keepDifferentInputsOutput(List<Call> calls) {
+    public List<Call> keepDifferentInputsOutput(List<Call> calls) {
         List<Call> differentCalls = new ArrayList<>();
 
         for(Call c1 : calls) {
@@ -112,19 +111,19 @@ public class ExecutedFunction {
 
             // check inputs
             for(Call c2 : differentCalls) {
-                if(!JSUtil.compareInputs(c1.getInputs(), c2.getInputs()) || !JSUtil.equalType(c1.getOutput(), c2.getOutput())) {
+                if(!JSUtil.compareInputsTypes(c1.getInputs(), c2.getInputs()) || !JSUtil.equalType(c1.getOutput(), c2.getOutput())) {
                     same=false;
                     break;
                 }
             }
 
+            // check if the call is different or if it is the first to add
             if(!same || differentCalls.size() == 0) {
                 differentCalls.add(c1);
             }
         }
 
-        calls.clear();
-        calls = differentCalls;
+        return differentCalls;
     }
 
     @Override

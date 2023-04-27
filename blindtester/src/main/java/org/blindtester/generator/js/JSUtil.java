@@ -31,7 +31,7 @@ public class JSUtil {
         return JSType.OBJECT;
     }
 
-    public static boolean compareInputs(List<Object> lstO1, List<Object> lstO2) {
+    public static boolean compareInputsTypes(List<Object> lstO1, List<Object> lstO2) {
         if (lstO1 == null || lstO2 == null){
             return false;
         }
@@ -41,12 +41,9 @@ public class JSUtil {
         }
 
         // if a type disagree for 2 elements of the 2 list even for a position => False
-        for(Object o1 : lstO1) {
-            boolean allTypesEqual = true;
-            for(Object o2 : lstO2) {
-                if (getType(o1) != getType(o2)) {
-                    return false;
-                }
+        for(int i=0; i < lstO1.size(); i++){
+            if (getType(lstO1.get(i)) != getType(lstO2.get(i))) {
+                return false;
             }
         }
 
