@@ -1,6 +1,7 @@
 package org.blindtester.generator;
 
 import com.google.gson.annotations.SerializedName;
+import org.apache.commons.lang3.NotImplementedException;
 import org.blindtester.generator.js.JSUtil;
 import org.javatuples.Pair;
 
@@ -10,28 +11,41 @@ import java.util.List;
 import java.util.Map;
 
 public class ExecutedFunction {
+    /**
+     * The name of the function
+     */
     @SerializedName("name")
     private String Name;
 
+    /**
+     * List of calls of the function in the trace
+     */
     @SerializedName("calls")
     private List<Call> Calls;
 
+    /**
+     * Get the function name
+     *
+     * @return the function name
+     */
     public String getName() {
         return Name;
     }
 
-    public void setName(String name) {
-        Name = name;
-    }
-
+    /**
+     * Get the list of calls
+     *
+     * @return the list of calls
+     */
     public List<Call> getCalls() {
         return Calls;
     }
 
-    public void setCalls(List<Call> calls) {
-        Calls = calls;
-    }
-
+    /**
+     * Get all distinct call from a function
+     *
+     * @return the list of distinct calls
+     */
     public Pair<Boolean, List<Call>> getDistinctCalls() {
         List<Call> distinctCalls = new ArrayList<>();
         boolean sideEffect = false;
@@ -57,6 +71,12 @@ public class ExecutedFunction {
         return new Pair(sideEffect, distinctCalls);
     }
 
+    /**
+     * Compute the minimal set of functions based on the types of inputs and output and number of arguments
+     *
+     * @return the distinct list of function calls
+     * @throws Exception if there is a side effect detected in the function
+     */
     public List<Call> computeMinimumSetOfCalls() throws Exception {
         // get all distinct calls
         Pair<Boolean, List<Call>> resultDistinct = getDistinctCalls();
@@ -89,7 +109,7 @@ public class ExecutedFunction {
         // keep cleaned list
 
         for (var entry : mapFuncArgs.entrySet()) {
-            mapFuncArgs.put(entry.getKey(), keepDifferentInputsOutput(entry.getValue()) );
+            mapFuncArgs.put(entry.getKey(), keepDifferentInputsOutput(entry.getValue()));
         }
 
         // keep cleaned list
@@ -103,22 +123,37 @@ public class ExecutedFunction {
         return minimumSetCalls;
     }
 
+    /**
+     * TODO Compute KNN...
+     *
+     * @return the list of ...
+     */
+    public List<Call> computeKNN() {
+        throw new NotImplementedException();
+    }
+
+    /**
+     * Check if all call have different output and output
+     *
+     * @param calls the list of calls to compare
+     * @return a list of call containing different inputs and output
+     */
     public List<Call> keepDifferentInputsOutput(List<Call> calls) {
         List<Call> differentCalls = new ArrayList<>();
 
-        for(Call c1 : calls) {
+        for (Call c1 : calls) {
             boolean same = true;
 
             // check inputs
-            for(Call c2 : differentCalls) {
-                if(!JSUtil.compareInputsTypes(c1.getInputs(), c2.getInputs()) || !JSUtil.equalType(c1.getOutput(), c2.getOutput())) {
-                    same=false;
+            for (Call c2 : differentCalls) {
+                if (!JSUtil.compareInputsTypes(c1.getInputs(), c2.getInputs()) || !JSUtil.equalType(c1.getOutput(), c2.getOutput())) {
+                    same = false;
                     break;
                 }
             }
 
             // check if the call is different or if it is the first to add
-            if(!same || differentCalls.size() == 0) {
+            if (!same || differentCalls.size() == 0) {
                 differentCalls.add(c1);
             }
         }
@@ -126,6 +161,11 @@ public class ExecutedFunction {
         return differentCalls;
     }
 
+    /**
+     * Override for the toString function to write the executed function
+     *
+     * @return the string representation of an executed function
+     */
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

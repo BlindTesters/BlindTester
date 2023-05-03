@@ -5,7 +5,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.internal.LinkedTreeMap;
 import org.apache.commons.lang3.ClassUtils;
 import org.blindtester.generator.*;
-import org.javatuples.Pair;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -13,29 +12,68 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.List;
 
+/**
+ * Generator of tests for Jest
+ */
 public class JestGenerator extends Generator {
+    /**
+     * JSON parser from the GSON library, use some specific parameters
+     */
     private Gson gson;
 
+    /**
+     * Character to indent code
+     */
     private char charIndent = ' ';
+
+    /**
+     * Number of space indentation
+     */
     private int sizeIndent = 4;
 
+    /**
+     * Constructor the create a Jest Generator with default parameters
+     *
+     * @param trace         the trace to analyze
+     * @param lineSeparator the line separator to use
+     */
     public JestGenerator(Trace trace, String lineSeparator) {
         this(trace, lineSeparator, ' ', 4);
     }
 
+    /**
+     * Constructor the create a Jest Generator with special parameters for the indentation
+     *
+     * @param trace         the trace to analyze
+     * @param lineSeparator the line separator to use
+     * @param charIndent    the character for indentation
+     * @param sizeIndent    the size of indentation
+     */
     public JestGenerator(Trace trace, String lineSeparator, char charIndent, int sizeIndent) {
         super(trace, lineSeparator);
         gson = new GsonBuilder().disableHtmlEscaping().create();
     }
 
-    private String createTestDescription(String functionName, Call c) {
-        if (c.getOutput() != null) {
-            return writeFunctionCall(functionName, c) + " should returns " + this.gson.toJson(c.getOutput());
+    /**
+     * Create a description for a test by using a function name and the possible return value
+     *
+     * @param functionName the name of the function
+     * @param call         the call to describe
+     * @return
+     */
+    private String createTestDescription(String functionName, Call call) {
+        if (call.getOutput() != null) {
+            return writeFunctionCall(functionName, call) + " should returns " + this.gson.toJson(call.getOutput());
         }
 
-        return functionName + " " + c.getInputs() + " (void) should not cause exception";
+        return functionName + " " + call.getInputs() + " (void) should not cause exception";
     }
 
+    /**
+     * Indent the code with the character for a number of times defined in constructor
+     *
+     * @return the line indented
+     */
     private String Indent() {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < sizeIndent; i++) {
@@ -45,6 +83,12 @@ public class JestGenerator extends Generator {
         return sb.toString();
     }
 
+    /**
+     * Write the input parameter for a function for a test
+     *
+     * @param input the input of the function
+     * @return the input formatted
+     */
     private String writeInput(Object input) {
         if (input != null && ClassUtils.isPrimitiveOrWrapper(input.getClass())) {
             return input.toString();
@@ -53,12 +97,19 @@ public class JestGenerator extends Generator {
         return this.gson.toJson(input);
     }
 
-    private String writeFunctionCall(String functionName, Call c) {
+    /**
+     * Write the function correctly to be called in a test
+     *
+     * @param functionName the name of the function
+     * @param call         the call to write
+     * @return the function call for a test
+     */
+    private String writeFunctionCall(String functionName, Call call) {
         StringBuilder sb = new StringBuilder();
         sb.append(functionName + "(");
         String input;
 
-        List<Object> inputs = c.getInputs();
+        List<Object> inputs = call.getInputs();
 
         for (int i = 0; i < inputs.size(); i++) {
             input = writeInput(inputs.get(i));
@@ -73,35 +124,41 @@ public class JestGenerator extends Generator {
         return sb.toString();
     }
 
-    private String writeExpectTest(String functionName, Call c) {
+    /**
+     * Write the result of a jest test
+     *
+     * @param functionName the name of the function
+     * @param call         the call that we need to except values
+     * @return the formatted string of the output
+     */
+    private String writeExpectTest(String functionName, Call call) {
         StringBuilder sb = new StringBuilder();
         sb.append(Indent() + "test('");
-        sb.append(createTestDescription(functionName, c));
+        sb.append(createTestDescription(functionName, call));
         sb.append("', () => {");
         sb.append(getLineSeparator());
         sb.append(Indent() + Indent() + "expect(");
 
-        Object output = c.getOutput();
+        Object output = call.getOutput();
 
         //primitive type
         if (ClassUtils.isPrimitiveOrWrapper(output.getClass())) {
-            sb.append(writeFunctionCall(functionName, c));
+            sb.append(writeFunctionCall(functionName, call));
             sb.append(").toBe(");
             sb.append(output);
         } else { // object
-            if(output instanceof String) {
-                sb.append(writeFunctionCall(functionName, c));
-            }
-            else {
+            if (output instanceof String) {
+                sb.append(writeFunctionCall(functionName, call));
+            } else {
                 // if the calling function returns
                 // a buffer we need to convert it to json in the test
                 LinkedTreeMap mapOutput = (LinkedTreeMap) output;
                 if (mapOutput.containsKey("type") && mapOutput.get("type").equals("Buffer")) {
-                    sb.append(writeFunctionCall(functionName, c) + ".toJSON()");
+                    sb.append(writeFunctionCall(functionName, call) + ".toJSON()");
                 } else {
                     sb.append("JSON.parse(");
                     sb.append("JSON.stringify(");
-                    sb.append(writeFunctionCall(functionName, c));
+                    sb.append(writeFunctionCall(functionName, call));
                     sb.append(")");
                     sb.append(")");
                 }
@@ -120,64 +177,41 @@ public class JestGenerator extends Generator {
         return sb.toString();
     }
 
-    private String writeNoErrorTest(String functionName, Call c) {
-        String sb = "test('" + createTestDescription(functionName, c)
-                + "', () => {" + getLineSeparator()
-                + "expect("
-                + writeFunctionCall(functionName, c)
-                + ").toBe(undefined);"
-                + getLineSeparator() + "});";
+    /**
+     * Write a test for void function that contains no output
+     *
+     * @param functionName the name of the function
+     * @param call         the call of the function
+     * @return the string to write in the test file
+     */
+    private String writeNoErrorTest(String functionName, Call call) {
+        String sb = "test('" + createTestDescription(functionName, call) + "', () => {" + getLineSeparator() + "expect(" + writeFunctionCall(functionName, call) + ").toBe(undefined);" + getLineSeparator() + "});";
 
         return sb;
     }
 
-    private String transformData(Object o) {
-        if (o instanceof String) {
-            return "\"" + o + "\"";
-        }
-
-        return o.toString();
-    }
-
-    public String createTests() throws Exception {
-        return createTests(true);
-    }
-
-    public String createTests(boolean all) throws Exception {
+    /**
+     * @param functionName
+     * @param requires
+     * @param calls
+     * @return
+     */
+    public String createTests(String functionName, List<Require> requires, List<Call> calls) {
         StringBuilder sb = new StringBuilder();
-        Trace t = getTrace();
 
-        for (Require r : t.getRequires()) {
+        for (Require r : requires) {
             sb.append(r.getInclude() + getLineSeparator());
         }
 
         sb.append(getLineSeparator());
-        sb.append("describe('blindtester-" + t.getProjectName() + "', () => {" + getLineSeparator());
 
-        for (ExecutedFunction ef : t.getExecutedFunctions()) {
-            // get all distinct calls
-            Pair<Boolean, List<Call>> resultDistinct = ef.getDistinctCalls();
-            List<Call> distinctCalls = resultDistinct.getValue1();
-            Boolean sideEffect = resultDistinct.getValue0();
+        sb.append("describe('blindtester-" + functionName + "', () => {" + getLineSeparator());
 
-            // write all tests for all functions in trace
-            if (all) {
-                for (Call c : distinctCalls) {
-                    if (c.getOutput() != null) {
-                        sb.append(writeExpectTest(ef.getName(), c) + getLineSeparator());
-                    } else {
-                        sb.append(writeNoErrorTest(ef.getName(), c) + getLineSeparator());
-                    }
-                }
-            } else { // write only the minimal set
-                List<Call> calls = ef.computeMinimumSetOfCalls();
-                for (Call c : calls) {
-                    if (c.getOutput() != null) {
-                        sb.append(writeExpectTest(ef.getName(), c) + getLineSeparator());
-                    } else {
-                        sb.append(writeNoErrorTest(ef.getName(), c) + getLineSeparator());
-                    }
-                }
+        for (Call c : calls) {
+            if (c.getOutput() != null) {
+                sb.append(writeExpectTest(functionName, c) + getLineSeparator());
+            } else {
+                sb.append(writeNoErrorTest(functionName, c) + getLineSeparator());
             }
         }
 
@@ -185,15 +219,44 @@ public class JestGenerator extends Generator {
         return sb.toString();
     }
 
+    /**
+     * Write tests to a file for a type of test
+     *
+     * @param path     the path to write the file
+     * @param testType the type of test
+     * @throws Exception in case of problem like an unknown test
+     */
     @Override
-    public void writeTests(String path) throws Exception {
+    public void writeTests(String path, String testType) throws Exception {
         try {
-            FileWriter fileWriter = new FileWriter(Paths.get(path, "testblinder-"
-                    + getTrace().getProjectName()
-                    + ".test.js").toFile());
+            FileWriter fileWriter = new FileWriter(Paths.get(path, "testblinder-" + getTrace().getProjectName() + ".test.js").toFile());
             BufferedWriter writer = new BufferedWriter(fileWriter);
-            writer.write(createTests(false));
+
+            Trace t = getTrace();
+
+            for (ExecutedFunction ef : t.getExecutedFunctions()) {
+                switch (testType) {
+                    case "all":
+                        writer.write(createTests(ef.getName(), t.getRequires(), ef.getCalls()));
+                        break;
+                    case "distinct":
+                        writer.write(createTests(ef.getName(), t.getRequires(), ef.getDistinctCalls().getValue1()));
+                        break;
+                    case "minimal":
+                        writer.write(createTests(ef.getName(), t.getRequires(), ef.computeMinimumSetOfCalls()));
+                        break;
+                    case "knn":
+                        writer.write(createTests(ef.getName(), t.getRequires(), ef.computeKNN()));
+                        break;
+                    default:
+                        throw new Exception("Test not found");
+                }
+            }
+
             writer.close();
+
+            // write report about the calls
+            this.makeReport();
         } catch (IOException e) {
             throw new RuntimeException(e);
         } catch (Exception e) {

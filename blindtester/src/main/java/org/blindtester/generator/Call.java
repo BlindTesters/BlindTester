@@ -4,34 +4,55 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
+/**
+ * A call of a function
+ */
 public class Call {
+    /**
+     * List of parameters of a function
+     */
     @SerializedName("inputs")
     private List<Object> Inputs;
 
+    /**
+     * The output of the function
+     */
     @SerializedName("output")
     private Object Output;
 
+    /**
+     * Get all inouts for a call
+     *
+     * @return the list of inputs
+     */
     public List<Object> getInputs() {
         return Inputs;
     }
 
-    public void setInputs(List<Object> inputs) {
-        Inputs = inputs;
-    }
-
+    /**
+     * Get the output of the function
+     *
+     * @return the output
+     */
     public Object getOutput() {
         return Output;
     }
 
-    public void setOutput(Object output) {
-        Output = output;
-    }
-
+    /**
+     * Override of the toString function to write a Call
+     *
+     * @return
+     */
     @Override
     public String toString() {
         return getInputs().toString() + " -> " + getOutput();
     }
 
+    /**
+     * Override of the hashCode function to write a specific hashcode with inputs
+     *
+     * @return
+     */
     @Override
     public int hashCode() {
         int hash = 7;
@@ -44,6 +65,12 @@ public class Call {
         return hash;
     }
 
+    /**
+     * Override of the equals function to compare to Calls
+     *
+     * @param other the other call to compare
+     * @return an indication that if the two objects are equals
+     */
     @Override
     public boolean equals(Object other) {
         if (this == other)

@@ -1,31 +1,74 @@
 package org.blindtester.generator;
 
 import org.javatuples.Pair;
+
 import java.util.List;
 
+/**
+ * Abstract class that represent a test generator
+ */
 public abstract class Generator {
+    /**
+     * The trace of the execution of code
+     */
     private final Trace trace;
+
+    /**
+     * The line separator
+     */
     private final String lineSeparator;
 
+    /**
+     * Constructor that create a Generator
+     *
+     * @param trace         the trace that contains the function executions
+     * @param lineSeparator the line separator
+     */
     public Generator(Trace trace, String lineSeparator) {
         this.trace = trace;
         this.lineSeparator = lineSeparator;
     }
 
-    public abstract String createTests() throws Exception;
+    /**
+     * Abstract function to create tests
+     *
+     * @param functionName the name of the function
+     * @param requires     the list of requirements (libraries, imports, ...)
+     * @param calls        the list of function calls
+     * @return the string that contains tests
+     */
+    public abstract String createTests(String functionName, List<Require> requires, List<Call> calls);
 
-    public abstract String createTests(boolean all) throws Exception;
+    /**
+     * Write test to a file
+     *
+     * @param path     the path to the file
+     * @param testType the type of test to execute
+     * @throws Exception
+     */
+    public abstract void writeTests(String path, String testType) throws Exception;
 
-    public abstract void writeTests(String path) throws Exception;
-
+    /**
+     * Het the line separator that the generator uses
+     *
+     * @return the line separator
+     */
     public String getLineSeparator() {
         return lineSeparator;
     }
 
+    /**
+     * Get the trace that the generator uses
+     *
+     * @return the trace
+     */
     public Trace getTrace() {
         return trace;
     }
 
+    /**
+     * Create a report in console about the number of calls in the trace
+     */
     public void makeReport() {
         Trace t = getTrace();
 
@@ -34,9 +77,6 @@ public abstract class Generator {
         System.out.println("- " + t.getRequires().size() + " libraries import");
 
         for (ExecutedFunction f : t.getExecutedFunctions()) {
-            // get list of calls for the function
-            List<Call> calls = f.getCalls();
-
             // get distinct calls
             Pair<Boolean, List<Call>> resultDistinct = f.getDistinctCalls();
             List<Call> distinctCalls = resultDistinct.getValue1();
