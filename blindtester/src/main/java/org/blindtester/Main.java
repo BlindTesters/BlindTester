@@ -17,7 +17,7 @@ public class Main {
     public static void help() {
         System.out.println("java -jar testbuilder.jar GENERATOR TEST_TYPE trace.json");
         System.out.println("Generators     :  jest");
-        System.out.println("Types of tests : all, distinct, minimal, knn");
+        System.out.println("Types of tests : all, distinct, minimal, kmeans");
     }
 
     /**
@@ -37,7 +37,7 @@ public class Main {
             // get chosen generator
             String generator = args[0].toLowerCase();
 
-            // get trace.json path
+            // get the type of heuristic the program will use to create tests
             String testType = args[1];
 
             // get trace.json path
@@ -47,6 +47,7 @@ public class Main {
             Gson gson = new Gson();
             JsonReader reader = new JsonReader(new FileReader(tracePath));
             Trace t = gson.fromJson(reader, Trace.class);
+            t.setTracePath(tracePath);
 
             switch (generator) {
                 case "jest":

@@ -63,20 +63,39 @@ Go to the project's directory and :
 $ mvn clean compile assembly:single
 ```
 
+#### KMeans specific configuration
+We currently need a python installation to compute the KMeans cluster. If you want to use this feature, please make sure that you have a valid python installation on your computer. Then, create a python virtual environment in the kmeans folder and install all the dependencies in the virtual env.
+
+``` sh
+$ cd kmeans
+$ python3 -m venv venv
+$ source venv/bin/activate
+$ pip install -r requirements.txt
+```
+
+You can now use the KMeans option.
+
+NOTE: This is a quick solution to be able to provide some clustering. We might work on a Java implementation if we have enough time by the end of the semester. This was easier for us to do so in a first step for a proof-of-concept.
+
 ### Usage 
 
 ``` sh
-$ java -jar path_to_jar/blindtester.jar GENERATOR path_to_trace/trace.json
+$ java -jar path_to_jar/blindtester.jar GENERATOR TYPE_OF_TESTS path_to_trace/trace.json
 ```
 
-Where `GENERATOR` is the name of the generator that target a test system.
+Where `GENERATOR` is the name of the generator that target a test system and `TYPE_OF_TESTS` one option among the following:
+
+- `all` : Generates a test for all calls in the trace
+- `distinct`: Generates tests only for distinct calls
+- `minimal`: Genrates tests only for the minimal set of calls
+- `kmeans`: Generates only one test for detected cluster via KMeans method
 
 *At this time, only a generator for Jest is implemented in BlindTester*
 
-#### Generate some tests for Jest
+#### Generate all tests from a trace for Jest
 
 ``` sh
-$ java -jar path_to_jar/blindtester.jar jest path_to_trace/trace.json
+$ java -jar path_to_jar/blindtester.jar jest all path_to_trace/trace.json
 ```
 
 #### Execute tests with Jest

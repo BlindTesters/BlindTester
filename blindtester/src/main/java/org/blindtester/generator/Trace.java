@@ -44,6 +44,8 @@ public class Trace {
     @SerializedName("executed_functions")
     private List<ExecutedFunction> ExecutedFunctions;
 
+    private String TracePath;
+
     /**
      * Get the project name
      *
@@ -113,5 +115,13 @@ public class Trace {
         }
 
         return sb.toString();
+    }
+
+    public void setTracePath(String tracePath) {
+        this.TracePath = tracePath;
+    }
+
+    public String getTracePath() {
+        return TracePath;
     }
 }

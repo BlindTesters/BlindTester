@@ -80,6 +80,7 @@ public abstract class Generator {
             // get distinct calls
             Pair<Boolean, List<Call>> resultDistinct = f.getDistinctCalls();
             List<Call> distinctCalls = resultDistinct.getValue1();
+            List<Call> clusteredCalls = f.computeKMeans(t.getTracePath());
             Boolean sideEffect = resultDistinct.getValue0();
 
             System.out.println("- Function " + f.getName() + " call(s) : " + f.getCalls().size());
@@ -89,8 +90,9 @@ public abstract class Generator {
             }
 
             System.out.println("-- Distinct call(s) : " + distinctCalls.size());
+            System.out.println("-- Detected clusters: " + clusteredCalls.size());
         }
         System.out.println("***************************************************");
-        System.out.println("");
+        System.out.println();
     }
 }

@@ -1,14 +1,18 @@
 package org.blindtester.generator;
 
 import com.google.gson.annotations.SerializedName;
-import org.apache.commons.lang3.NotImplementedException;
 import org.blindtester.generator.js.JSUtil;
 import org.javatuples.Pair;
 
+import org.zeroturnaround.exec.ProcessExecutor;
+import org.zeroturnaround.exec.stream.LogOutputStream;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeoutException;
 
 public class ExecutedFunction {
     /**
@@ -124,12 +128,30 @@ public class ExecutedFunction {
     }
 
     /**
-     * TODO Compute KNN...
+     * Compute KMeans (currently executing a python script, we might want to improve this
+     * part and use a Java library such as Tribuo for example)
      *
-     * @return the list of ...
+     * @return the list of k calls, one per computed cluster.
      */
-    public List<Call> computeKNN() {
-        throw new NotImplementedException();
+    public List<Call> computeKMeans(String tracePath) {
+        // Retrieve all calls.
+        List<Call> allCalls = getDistinctCalls().getValue1();
+        List<Call> calls = new ArrayList<>();
+        try {
+            new ProcessExecutor().command("./kmeans/venv/bin/python", "-Wignore", "./kmeans/kmeans.py", "--trace", tracePath)
+                    .redirectOutput(new LogOutputStream() {
+                        @Override
+                        protected void processLine(String line) {
+                            // Retrieve the call at the specified index.
+                            calls.add(allCalls.get(Integer.parseInt(line)));
+                            //System.out.println(line);
+                        }
+                    })
+                    .execute();
+        } catch (IOException | InterruptedException | TimeoutException e) {
+            throw new RuntimeException(e);
+        }
+        return calls;
     }
 
     /**
