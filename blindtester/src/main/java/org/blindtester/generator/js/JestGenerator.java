@@ -254,9 +254,6 @@ public class JestGenerator extends Generator {
             }
 
             writer.close();
-
-            // write report about the calls
-            this.makeReport();
         } catch (IOException e) {
             throw new RuntimeException(e);
         } catch (Exception e) {

@@ -8,11 +8,9 @@ import org.zeroturnaround.exec.ProcessExecutor;
 import org.zeroturnaround.exec.stream.LogOutputStream;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeoutException;
+import java.util.Set;
 
 public class ExecutedFunction {
     /**
@@ -181,6 +179,44 @@ public class ExecutedFunction {
         }
 
         return differentCalls;
+    }
+
+    /**
+     * Override for the toString function to write the executed function
+     *
+     * @return the string representation of an executed function
+     */
+    public List<String> getSignature() {
+        Set<String> signatures = new HashSet<>();
+
+        for (Call c : getCalls()) {
+            StringBuilder sbCalls = new StringBuilder();
+            sbCalls.append(this.getName());
+            sbCalls.append("(");
+
+            List<Object> inputs = c.getInputs();
+            for (int i=0;i<inputs.size();i++) {
+                sbCalls.append(JSUtil.getType(inputs.get(i)));
+                if(i < inputs.size()-1) {
+                    sbCalls.append(", ");
+                }
+            }
+            sbCalls.append(")");
+
+            sbCalls.append(" : ");
+
+            sbCalls.append(JSUtil.getType(c.getOutput()));
+
+            signatures.add(sbCalls.toString());
+        }
+
+        List<String> lst = new ArrayList<>();
+
+        signatures.forEach((e) -> {
+            lst.add(e);
+        });
+
+        return lst;
     }
 
     /**

@@ -41,7 +41,7 @@ public class Call {
     /**
      * Override of the toString function to write a Call
      *
-     * @return
+     * @return the string representation of a call
      */
     @Override
     public String toString() {

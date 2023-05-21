@@ -1,7 +1,13 @@
 package org.blindtester.generator;
 
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.javatuples.Pair;
 
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.List;
 
 /**
@@ -66,33 +72,4 @@ public abstract class Generator {
         return trace;
     }
 
-    /**
-     * Create a report in console about the number of calls in the trace
-     */
-    public void makeReport() {
-        Trace t = getTrace();
-
-        System.out.println("***************************************************");
-        System.out.println("Report for project : " + t.getProjectName());
-        System.out.println("- " + t.getRequires().size() + " libraries import");
-
-        for (ExecutedFunction f : t.getExecutedFunctions()) {
-            // get distinct calls
-            Pair<Boolean, List<Call>> resultDistinct = f.getDistinctCalls();
-            List<Call> distinctCalls = resultDistinct.getValue1();
-            List<Call> clusteredCalls = f.computeKMeans(t.getTracePath());
-            Boolean sideEffect = resultDistinct.getValue0();
-
-            System.out.println("- Function " + f.getName() + " call(s) : " + f.getCalls().size());
-
-            if (sideEffect) {
-                System.out.println("-- Side effect detected for this function");
-            }
-
-            System.out.println("-- Distinct call(s) : " + distinctCalls.size());
-            System.out.println("-- Detected clusters: " + clusteredCalls.size());
-        }
-        System.out.println("***************************************************");
-        System.out.println();
-    }
 }

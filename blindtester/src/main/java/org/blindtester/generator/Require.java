@@ -24,9 +24,9 @@ public class Require {
     /**
      * Override of the toString function ti print a Require
      *
-     * @return
+     * @return the string representation of a require
      */
     public String toString() {
-        return String.format("Include : %s", include);
+        return String.format("%s", include);
     }
 }
