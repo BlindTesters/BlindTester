@@ -33,13 +33,14 @@ The goal of this project is to generate automatically tests for a specific funct
 Inject the following snippet in your application to get a trace of the desired function to analyze :
 
 ``` javascript
-const JSpector = require('path_to/JSpector/jspector');
+const JSpector = require('../../JSpector/jspector');
 
-// replace LIB_NAME with the name of your library that contains the function to test
-const lib_name = 'LIB_NAME';
-
-// replace FUNCTION_NAME with the name of your function to test
-const crypto = new JSpector(require(lib_name), lib_name, 'FUNCTION_NAME', __filename, 'SSE23-crypto').get_library();
+const db = new JSpector(
+  'decibels',
+  'fromGain',
+  __filename,
+  'SSE23-fourier'
+).get_library();
 ```
 
 *Please note that the trace contains the path of the project. Please restart JSpector or edit the trace.json file if your project changed path*
@@ -79,26 +80,34 @@ NOTE: This is a quick solution to be able to provide some clustering. We might w
 
 ### Usage 
 
+#### Report generation
+
 ``` sh
-$ java -jar path_to_jar/blindtester.jar GENERATOR TYPE_OF_TESTS path_to_trace/trace.json
+java -jar path_to_jar/blindtester.jar analyse [TRACE_PATH]
 ```
 
-Where `GENERATOR` is the name of the generator that target a test system and `TYPE_OF_TESTS` one option among the following:
+#### Unit tests generation
 
-- `all` : Generates a test for all calls in the trace
-- `distinct`: Generates tests only for distinct calls
-- `minimal`: Genrates tests only for the minimal set of calls
-- `kmeans`: Generates only one test for detected cluster via KMeans method
+``` sh
+$ java -jar testbuilder.jar generate [GENERATOR] [TEST_TYPE] [TRACE_PATH]
+```
+
+Where `GENERATOR` is the name of the generator that target a test system and `TEST_TYPE` one option among the following:
+
+- `all` : Generate a test for all calls in the trace
+- `distinct`: Generate tests only for distinct calls
+- `minimal`: Generate tests only for the minimal set of calls
+- `kmeans`: Generate only one test for detected cluster via KMeans method
 
 *At this time, only a generator for Jest is implemented in BlindTester*
 
-#### Generate all tests from a trace for Jest
+##### Generate all tests from a trace for Jest
 
 ``` sh
 $ java -jar path_to_jar/blindtester.jar jest all path_to_trace/trace.json
 ```
 
-#### Execute tests with Jest
+##### Execute tests with Jest
 
 Go to your project directory and : 
 
@@ -110,74 +119,61 @@ $ npm install jest
 $ ./node_modules/jest/bin/jest.js
 ```
 
-## Example
+## Examples
 
 All examples are available in the [examples directory](examples/)
 
-### Moment - Simple example
+### Fourier
 
-Compute the difference of two dates for two examples.
+fromGain function from decibels library used by fourier-transform
 
-1. JSpector injection
-
-<p align="center">
-    <img 
-    src="./docs/images/moment_jspector.png">
-</p>
-
-2. Start BlindTester on the trace
+Add JSpector
 
 <p align="center">
     <img 
-    src="./docs/images/moment_report.png">
+    src="./docs/images/fourier_jspector.png">
 </p>
 
-Coming soon...
-
-### Crypto - Advanced example
-
-Generate 101 function calls to hash a word of which two are duplicates.
-
-1. JSpector injection
+Generate a report
 
 <p align="center">
     <img 
-    src="./docs/images/crypto_jspector.png">
+    src="./docs/images/fourier_report.png">
 </p>
 
-2. Start BlindTester on the trace
+Generated unit tests
 
 <p align="center">
     <img 
-    src="./docs/images/crypto_report.png">
+    src="./docs/images/fourier_tests.png">
 </p>
 
-3. Generated tests
+Test execution with jest
+
+<p align="center">
+    <img 
+    src="./docs/images/fourier_jest.png">
+</p>
+
+### Crypto
+
+pbkdf2Sync function from Crypto module of NodeJS
+
+101 calls to hash a word of which two are duplicates.
+
+Generated tests for a distinct set of values
 
 <p align="center">
     <img 
     src="./docs/images/crypto_generation.png">
 </p>
 
-4. Start Jest on automatically generated tests
+Start Jest on automatically generated tests
 
 <p align="center">
     <img 
     src="./docs/images/crypto_jest.png">
 </p>
-
-### D3 - Advanced example
-
-Create a png file that contains small random rectangle for each pixels.
-
-<p align="center">
-    <img 
-    width="200" 
-    height="200"
-    src="./docs/images/d3_output.png">
-</p>
-
-Coming soon...
 
 ## License
 

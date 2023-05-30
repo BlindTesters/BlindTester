@@ -10,7 +10,7 @@ const db = new JSpector(
 var ft = require('fourier-transform');
 
 var frequency = 440;
-var size = 2 ** 16;
+var size = 2 ** 15;
 var sampleRate = 44100;
 var waveform = new Float32Array(size);
 for (var i = 0; i < size; i++) {

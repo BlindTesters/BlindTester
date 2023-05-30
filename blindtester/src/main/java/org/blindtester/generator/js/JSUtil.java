@@ -20,8 +20,6 @@ public class JSUtil {
             return JSType.NULL;
         }
 
-        System.out.println(ClassUtils.getName(o.getClass()));
-
         // Check primitive type
         if (ClassUtils.isPrimitiveOrWrapper(o.getClass())) {
             switch (ClassUtils.getName(o.getClass())) {
