@@ -10,18 +10,17 @@ class JSpector {
    * 
    * @param {*} library_name The library name in which the function to trace is located.
    * @param {*} fn The function to trace.
-   * @param {*} main_file The main file of the project.
    * @param {*} project_name The name of the project.
    * @param {*} [output_file_name] The name of the output file (default='trace.json').
    */
-  constructor(library_name, fn, main_file, project_name, verbose=false, output_file_name='trace.json') {
+  constructor(library_name, fn, project_name, verbose=false, output_file_name='trace.json') {
     // This will contain the trace.
     this.TRACE = {};
     // This will contain all the required modules in the main file.
     this.REQUIRES = [];
 
     // Set variables useful for trace generation.
-    this.main_file = main_file;
+    this.main_file = process.argv[1];  // this is the file executed by node
     this.project_name = project_name;
     this.output_file_name = output_file_name;
     this.verbose = verbose;
@@ -56,12 +55,21 @@ class JSpector {
   }
 
   /**
+   * Build the path to the targeted file. This helpls to retrieve the
+   * available modules in the targeted file's context.
+   * @returns the path to the targeted file.
+   */
+  getLibraryPath() {
+    return `${path.dirname(this.main_file)}/`;
+  }
+
+  /**
    * This function will load the desired function from the main_file directory by
    * using a require function created with the main_file directory as base.
    * @returns the library.
    */
   requireLibrary() {
-    const requireUtil = createRequire(`${path.dirname(this.main_file)}/`);
+    const requireUtil = createRequire(this.getLibraryPath());
     return requireUtil(this.library_name);
   }
 
@@ -99,10 +107,6 @@ class JSpector {
           }
         });
       }
-    });
-    // Add the inspected library to the requires.
-    this.REQUIRES.push({
-      'include': `const ${this.import_name} = require('${this.library_name}');`
     });
   }
 
@@ -233,6 +237,16 @@ class JSpector {
    */
   get_library() {
     return this.library;
+  }
+
+  /**
+   * This function will "start" the injector by replacing the library
+   * in the node requirements cache.
+   */
+  start() {
+    // Locate the desired library in the paths.
+    let libraryPath = require.resolve(this.library_name, {paths:[this.getLibraryPath()]});
+    require.cache[libraryPath].exports = this.get_library();
   }
 }
 

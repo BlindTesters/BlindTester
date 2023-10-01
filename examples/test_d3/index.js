@@ -1,13 +1,4 @@
-// Inject a wrapper around the function in the class we want to inspect.
-const JSpector = require('../../JSpector/jspector');
-
-// We will inspect the d3 library.
-const d3 = new JSpector(
-  'd3',
-  'selection.attr',  // The function we want to inspect is nested in a submodule.
-  __filename,
-  'SSE23-d3node'
-).get_library();
+const d3 = require('d3');
 
 // This example relies on the one provided in the d3-node library documentation
 // https://github.com/d3-node/d3node-congress-map
