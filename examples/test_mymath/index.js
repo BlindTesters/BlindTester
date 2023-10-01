@@ -1,11 +1,4 @@
-// Inject a wrapper around the function in the class we want to inspect.
-const JSpector = require('../../JSpector/jspector');
-const my_math = new JSpector(
-  './my_math',
-  'inc',
-  __filename,
-  'SSE23-mymath'
-).get_library();
+const my_math = require('./my_math');
 
 my_math.inc(1);
 my_math.inc(1);

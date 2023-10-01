@@ -1,12 +1,4 @@
-// Inject a wrapper around the function in the class we want to inspect.
-const JSpector = require('../../JSpector/jspector');
-const db = new JSpector(
-  'decibels',
-  'fromGain',
-  __filename,
-  'SSE23-fourier'
-).get_library();
-
+const db = require('decibels');
 var ft = require('fourier-transform');
 
 var frequency = 440;
