@@ -13,7 +13,15 @@ function findCalls(node, functionName) {
 
     switch (node.type) {
         case 'ExpressionStatement':
-            return node.expression.callee.property.name == functionName
+            if(node.expression.callee !== undefined) {
+                return  node.expression.callee.property.name == functionName
+            }
+            else if(node.expression.right !== undefined) {
+                if(node.expression.right.callee.property !== undefined){
+                    return node.expression.right.callee.property.name == functionName
+                }
+            }
+
             break;
         case 'IfStatement':
             return findCalls(node.consequent, functionName) || findCalls(node.alternate, functionName)
@@ -42,8 +50,17 @@ function findCalls(node, functionName) {
             return found
             break;
         case 'VariableDeclarator':
-            if(node.init.callee.property !== undefined)
-                return node.init.callee.property.name == functionName
+            console.log(node)
+            if(node.init.callee !== undefined){
+                if (node.init.callee.property !== undefined) {
+                    console.log(node.init.callee.property)
+                    return node.init.callee.property.name == functionName;
+                }
+                else if (node.init.callee.name !== undefined) {
+                    return node.init.callee.name == functionName;
+                }
+            }
+
             break;
         default:
             console.log("Unknown statement type : " + node.type);
@@ -109,4 +126,4 @@ function getAllCalls(scriptPath, functionName) {
     }
 }
 
-getAllCalls('../test_crypto/index.js', 'pbkdf2Sync')
+console.log(getAllCalls('../test_fourier/index.js', 'ft'))
