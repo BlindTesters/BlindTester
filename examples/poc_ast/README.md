@@ -1,9 +1,5 @@
-# Example - local maths libraries
+# Example - AST test
 
-Install dependencies
+python3 parse.py 
 
-> npm install
 
-Execute the app 
-
-> node index.js
