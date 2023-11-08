@@ -33,6 +33,17 @@ function findCalls(node, functionName) {
             return findCalls(node.body, functionName)
             break;
         case 'VariableDeclaration':
+            var found = false
+            // check for all stmts
+            for(var i = 0;i < node.declarations.length; i++) {
+                found = found | findCalls(node.declarations[i], functionName)
+            }
+
+            return found
+            break;
+        case 'VariableDeclarator':
+            if(node.init.callee.property !== undefined)
+                return node.init.callee.property.name == functionName
             break;
         default:
             console.log("Unknown statement type : " + node.type);
@@ -54,7 +65,6 @@ function getAllCalls(scriptPath, functionName) {
         // if any node of the root body contains the function we keep it
         for (var i = 0; i < body.length; i++) {
             let stmt = body[i]
-            console.log(stmt)
             totalBody.push(stmt)
             let isInteresting = findCalls(stmt, functionName)
             if(isInteresting) {
@@ -79,8 +89,10 @@ function getAllCalls(scriptPath, functionName) {
 
             console.log("Test #" + i + " : ")
 
+            // print the header necessary for the expression to work
             console.log(codeHeader)
 
+            // temprary way to see the expression to test
             console.log("Check value of this call :")
             console.log("************************")
             console.log(codeCallToTest)
@@ -97,4 +109,4 @@ function getAllCalls(scriptPath, functionName) {
     }
 }
 
-getAllCalls('../test_mymath/index.js', 'div1')
+getAllCalls('../test_crypto/index.js', 'pbkdf2Sync')
