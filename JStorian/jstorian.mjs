@@ -1,11 +1,12 @@
-var esprima = require('esprima');
-var fs = require('fs');
-var escodegen = require('escodegen')
+import * as esprima from 'esprima';
+import * as fs from 'fs';
 
+// Function to create a deep copy of an object
 function deepCopy(o){
     return JSON.parse(JSON.stringify(o))
 }
 
+// Find recursively the useful nodes
 function findCalls(node, functionName) {
     if(node === undefined){
         return false
@@ -50,10 +51,8 @@ function findCalls(node, functionName) {
             return found
             break;
         case 'VariableDeclarator':
-            console.log(node)
             if(node.init.callee !== undefined){
                 if (node.init.callee.property !== undefined) {
-                    console.log(node.init.callee.property)
                     return node.init.callee.property.name == functionName;
                 }
                 else if (node.init.callee.name !== undefined) {
@@ -70,52 +69,24 @@ function findCalls(node, functionName) {
     return false
 }
 
+// Create a list of tuples that contain the statement and the associated AST to call the statement with the same
+// values as in the runtime execution
 function getAllCalls(scriptPath, functionName) {
     try {
-        lstFuncTree = []
-        totalBody = []
-
+        const lstFuncTree = []
+        const totalBody = []
         const program = fs.readFileSync(scriptPath, 'utf8');
-        let tree = esprima.parse(program);
-        let body = tree.body
+        const tree = esprima.parse(program);
+        const body = tree.body
 
         // if any node of the root body contains the function we keep it
         for (var i = 0; i < body.length; i++) {
-            let stmt = body[i]
+            const stmt = body[i]
             totalBody.push(stmt)
-            let isInteresting = findCalls(stmt, functionName)
+            const isInteresting = findCalls(stmt, functionName)
             if(isInteresting) {
                 lstFuncTree.push({call: stmt, content: {type: tree.type, body: deepCopy(totalBody)}})
             }
-        }
-
-        for (var i = 0; i < lstFuncTree.length; i++) {
-            var completeCodeTest = lstFuncTree[i].content
-            const bodyCopy = deepCopy(completeCodeTest.body)
-            const size = bodyCopy.length
-            const bodyHeader = bodyCopy.slice(0, size-1)
-            const bodyCallToTest = [bodyCopy[size-1]]
-
-            // generate header
-            completeCodeTest.body = bodyHeader
-            const codeHeader = escodegen.generate(completeCodeTest)
-
-            // generate test
-            completeCodeTest.body = bodyCallToTest
-            const codeCallToTest = escodegen.generate(completeCodeTest)
-
-            console.log("Test #" + i + " : ")
-
-            // print the header necessary for the expression to work
-            console.log(codeHeader)
-
-            // temprary way to see the expression to test
-            console.log("Check value of this call :")
-            console.log("************************")
-            console.log(codeCallToTest)
-            console.log("************************")
-            console.log("End of test #"+i)
-            console.log("")
         }
 
         return lstFuncTree
@@ -126,4 +97,4 @@ function getAllCalls(scriptPath, functionName) {
     }
 }
 
-console.log(getAllCalls('../test_fourier/index.js', 'ft'))
+export {getAllCalls, deepCopy}
