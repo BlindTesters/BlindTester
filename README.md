@@ -146,6 +146,6 @@ All examples are available in the [examples directory](examples/)
 
 All rights reserved.
 
-Images is under CCA 4.0 and created by *JoyPixels* from [creazilla.com](https://creazilla.com) :
+Image is under CCA 4.0 and created by *JoyPixels* from [creazilla.com](https://creazilla.com) :
 
 - [Glasses](https://creazilla.com/nodes/46374-sunglasses-emoji-clipart)
