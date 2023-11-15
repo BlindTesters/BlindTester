@@ -19,6 +19,23 @@ The goal of this project is to generate automatically tests for a specific funct
 
 - Install [Maven](https://maven.apache.org/)
 
+## Description
+
+<p align="center">
+    <img 
+        src="./docs/images/steps.png" 
+        width="760" 
+        height="960">
+</p>
+
+- Steps 1 : Inject [JSpector](https://maven.apache.org/) which contains [JStorian](https://maven.apache.org/) to capture the execution call of a function
+
+- Steps 2 : Run the application you want to test and let JSpector and JStorian listen all function calls and generate a JSON file containing a trace and ASTs for each call.
+
+- Steps 3 : Use TestBlinder to work on the generated JSON file to generate some unit tests based on the runtime execution
+
+- Steps 4 : Run the tests by hand to verify that they pass and use this methodology to make regression tests and verify that the application and the functions tested still work with upgrades
+
 ## Installation
 
 Each function call is considered as a black box. The trace contains all inputs and output for a specific function. BlindTester will generate a test for each distinct call.
@@ -44,14 +61,6 @@ $ pip install -r requirements.txt
 You can now use the K-means option.
 
 NOTE: This is a quick solution to be able to provide some clustering. We might work on a Java implementation if we have enough time by the end of the semester. This was easier for us to do so in a first step for a proof-of-concept.
-
-<p align="center">
-    <img 
-        src="./docs/images/steps.png" 
-        width="366" 
-        height="493">
-</p>
-
 
 ## Usage 
 
