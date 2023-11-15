@@ -45,6 +45,14 @@ You can now use the K-means option.
 
 NOTE: This is a quick solution to be able to provide some clustering. We might work on a Java implementation if we have enough time by the end of the semester. This was easier for us to do so in a first step for a proof-of-concept.
 
+<p align="center">
+    <img 
+        src="./docs/images/steps.png" 
+        width="366" 
+        height="493">
+</p>
+
+
 ## Usage 
 
 ### Report generation
