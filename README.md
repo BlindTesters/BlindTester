@@ -19,24 +19,7 @@ The goal of this project is to generate automatically tests for a specific funct
 
 - Install [Maven](https://maven.apache.org/)
 
-## Get trace from execution with Inspectors
-
-<p align="center">
-    <img 
-        src="https://creazilla-store.fra1.digitaloceanspaces.com/emojis/48141/detective-emoji-clipart-md.png" 
-        width="100" 
-        height="100">
-</p>
-
-
-## BlindTester
-
-<p align="center">
-    <img 
-    src="https://creazilla-store.fra1.digitaloceanspaces.com/emojis/46374/sunglasses-emoji-clipart-md.png" 
-    width="100" 
-    height="100">
-</p>
+## Installation
 
 Each function call is considered as a black box. The trace contains all inputs and output for a specific function. BlindTester will generate a test for each distinct call.
 
@@ -48,8 +31,8 @@ Go to the project's directory and :
 $ mvn clean compile assembly:single
 ```
 
-#### KMeans specific configuration
-We currently need a python installation to compute the KMeans cluster. If you want to use this feature, please make sure that you have a valid python installation on your computer. Then, create a python virtual environment in the kmeans folder and install all the dependencies in the virtual env.
+### KMeans specific configuration
+We currently need a python installation to compute the K-means cluster. If you want to use this feature, please make sure that you have a valid python installation on your computer. Then, create a python virtual environment in the K-means folder and install all the dependencies in the virtual environment.
 
 ``` sh
 $ cd kmeans
@@ -58,19 +41,19 @@ $ source venv/bin/activate
 $ pip install -r requirements.txt
 ```
 
-You can now use the KMeans option.
+You can now use the K-means option.
 
 NOTE: This is a quick solution to be able to provide some clustering. We might work on a Java implementation if we have enough time by the end of the semester. This was easier for us to do so in a first step for a proof-of-concept.
 
-### Usage 
+## Usage 
 
-#### Report generation
+### Report generation
 
 ``` sh
 java -jar path_to_jar/blindtester.jar analyse [TRACE_PATH]
 ```
 
-#### Unit tests generation
+### Unit tests generation
 
 ``` sh
 $ java -jar testbuilder.jar generate [GENERATOR] [TEST_TYPE] [TRACE_PATH]
@@ -81,17 +64,17 @@ Where `GENERATOR` is the name of the generator that target a test system and `TE
 - `all` : Generate a test for all calls in the trace
 - `distinct`: Generate tests only for distinct calls
 - `minimal`: Generate tests only for the minimal set of calls
-- `kmeans`: Generate only one test for detected cluster via KMeans method
+- `kmeans`: Generate only one test for detected cluster via K-means method
 
 *At this time, only a generator for Jest is implemented in BlindTester*
 
-##### Generate all tests from a trace for Jest
+#### Generate all tests from a trace for Jest
 
 ``` sh
 $ java -jar path_to_jar/blindtester.jar jest all path_to_trace/trace.json
 ```
 
-##### Execute tests with Jest
+#### Execute tests with Jest
 
 Go to your project directory and : 
 
