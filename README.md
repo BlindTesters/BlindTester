@@ -31,7 +31,7 @@ Go to the project's directory and :
 $ mvn clean compile assembly:single
 ```
 
-### KMeans specific configuration
+### K-means specific configuration
 We currently need a python installation to compute the K-means cluster. If you want to use this feature, please make sure that you have a valid python installation on your computer. Then, create a python virtual environment in the K-means folder and install all the dependencies in the virtual environment.
 
 ``` sh
@@ -92,30 +92,30 @@ All examples are available in the [examples directory](examples/)
 
 ### Fourier
 
-fromGain function from decibels library used by fourier-transform
+`fromGain` function from decibels library used by `fourier-transform` library:
 
-Add JSpector
+- Add JSpector
 
 <p align="center">
     <img 
     src="./docs/images/fourier_jspector.png">
 </p>
 
-Generate a report
+- Generate a report
 
 <p align="center">
     <img 
     src="./docs/images/fourier_report.png">
 </p>
 
-Generated unit tests
+- Generated unit tests
 
 <p align="center">
     <img 
     src="./docs/images/fourier_tests.png">
 </p>
 
-Test execution with jest
+- Test execution with jest
 
 <p align="center">
     <img 
@@ -124,18 +124,18 @@ Test execution with jest
 
 ### Crypto
 
-pbkdf2Sync function from Crypto module of NodeJS
+`pbkdf2Sync` function from Crypto module of NodeJS
 
 101 calls to hash a word of which two are duplicates.
 
-Generated tests for a distinct set of values
+- Generated tests for a distinct set of values
 
 <p align="center">
     <img 
     src="./docs/images/crypto_generation.png">
 </p>
 
-Start Jest on automatically generated tests
+- Start Jest on automatically generated tests
 
 <p align="center">
     <img 
