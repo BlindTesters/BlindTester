@@ -4,7 +4,6 @@ import com.google.gson.annotations.SerializedName;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
-import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.javatuples.Pair;
@@ -162,7 +161,7 @@ public class Trace {
             // Content
             contentStream.showText("Blindtester - Trace report");
 
-            PDImageXObject pdImage = PDImageXObject.createFromFile("../docs/images/glasses.png", document);
+            PDImageXObject pdImage = PDImageXObject.createFromFile("docs/images/glasses.png", document);
             contentStream.endText();
 
             contentStream.drawImage(pdImage, 10, 5);

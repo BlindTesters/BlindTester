@@ -21,7 +21,21 @@ public class Call {
     private Object Output;
 
     /**
-     * Get all inouts for a call
+     * The output of the function
+     */
+    @SerializedName("header")
+    private String Header;
+
+    public List<String> getHeader() {
+        return List.of(Header.split("\n"));
+    }
+
+    public void setHeader(String header) {
+        Header = header;
+    }
+
+    /**
+     * Get all inputs for a call
      *
      * @return the list of inputs
      */

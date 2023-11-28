@@ -19,17 +19,12 @@ public class JestGenerator extends Generator {
     /**
      * JSON parser from the GSON library, use some specific parameters
      */
-    private Gson gson;
+    private final Gson gson;
 
     /**
      * Character to indent code
      */
-    private char charIndent = ' ';
-
-    /**
-     * Number of space indentation
-     */
-    private int sizeIndent = 4;
+    private final char charIndent = ' ';
 
     /**
      * Constructor the create a Jest Generator with default parameters
@@ -74,13 +69,26 @@ public class JestGenerator extends Generator {
      *
      * @return the line indented
      */
-    private String Indent() {
+    private String Indent(int n) {
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < sizeIndent; i++) {
+        /**
+         * Number of space indentation
+         */
+        int sizeIndent = 4;
+        for (int i = 0; i < n* sizeIndent; i++) {
             sb.append(charIndent);
         }
 
         return sb.toString();
+    }
+
+    /**
+     * Indent the code with the character for a number of times defined in constructor
+     *
+     * @return the line indented
+     */
+    private String Indent() {
+        return Indent(1);
     }
 
     /**
@@ -133,11 +141,18 @@ public class JestGenerator extends Generator {
      */
     private String writeExpectTest(String functionName, Call call) {
         StringBuilder sb = new StringBuilder();
-        sb.append(Indent() + "test('");
+        sb.append(Indent()).append("test('");
         sb.append(createTestDescription(functionName, call));
         sb.append("', () => {");
         sb.append(getLineSeparator());
-        sb.append(Indent() + Indent() + "expect(");
+
+        // add header
+        for (String line: call.getHeader()) {
+            sb.append(Indent(2)).append(line).append(getLineSeparator());
+        }
+
+        sb.append(getLineSeparator());
+        sb.append(Indent(2)).append("expect(");
 
         Object output = call.getOutput();
 
@@ -154,7 +169,7 @@ public class JestGenerator extends Generator {
                 // a buffer we need to convert it to json in the test
                 LinkedTreeMap mapOutput = (LinkedTreeMap) output;
                 if (mapOutput.containsKey("type") && mapOutput.get("type").equals("Buffer")) {
-                    sb.append(writeFunctionCall(functionName, call) + ".toJSON()");
+                    sb.append(writeFunctionCall(functionName, call)).append(".toJSON()");
                 } else {
                     sb.append("JSON.parse(");
                     sb.append("JSON.stringify(");
@@ -172,7 +187,7 @@ public class JestGenerator extends Generator {
 
         sb.append(");");
         sb.append(getLineSeparator());
-        sb.append(Indent() + "});");
+        sb.append(Indent()).append("});");
 
         return sb.toString();
     }
@@ -185,16 +200,14 @@ public class JestGenerator extends Generator {
      * @return the string to write in the test file
      */
     private String writeNoErrorTest(String functionName, Call call) {
-        String sb = "test('" + createTestDescription(functionName, call) + "', () => {" + getLineSeparator() + "expect(" + writeFunctionCall(functionName, call) + ").toBe(undefined);" + getLineSeparator() + "});";
-
-        return sb;
+        return "test('" + createTestDescription(functionName, call) + "', () => {" + getLineSeparator() + "expect(" + writeFunctionCall(functionName, call) + ").toBe(undefined);" + getLineSeparator() + "});";
     }
 
     /**
-     * @param functionName
-     * @param requires
-     * @param calls
-     * @return
+     * @param functionName the name of the function
+     * @param requires     the requirement
+     * @param calls        the calls
+     * @return the code of the test
      */
     public String createTests(String functionName, List<Require> requires, List<Call> calls) {
         StringBuilder sb = new StringBuilder();
