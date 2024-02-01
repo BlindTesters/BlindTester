@@ -1,6 +1,3 @@
-const esprima = require('esprima');
-const fs = require('fs');
-
 // Function to create a deep copy of an object
 function deepCopy(o){
     return JSON.parse(JSON.stringify(o))
