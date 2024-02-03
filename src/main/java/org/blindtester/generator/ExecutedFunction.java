@@ -70,7 +70,7 @@ public class ExecutedFunction {
             }
         }
 
-        return new Pair(sideEffect, distinctCalls);
+        return new Pair<Boolean, List<Call>>(sideEffect, distinctCalls);
     }
 
     /**
@@ -142,7 +142,6 @@ public class ExecutedFunction {
                         protected void processLine(String line) {
                             // Retrieve the call at the specified index.
                             calls.add(allCalls.get(Integer.parseInt(line)));
-                            //System.out.println(line);
                         }
                     })
                     .execute();

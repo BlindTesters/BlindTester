@@ -7,6 +7,7 @@ import org.apache.commons.lang3.ClassUtils;
 import org.blindtester.generator.*;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -242,7 +243,8 @@ public class JestGenerator extends Generator {
     @Override
     public void writeTests(String path, String testType) throws Exception {
         try {
-            FileWriter fileWriter = new FileWriter(Paths.get(path, "testblinder-" + getTrace().getProjectName() + ".test.js").toFile());
+            File testsFile = Paths.get(path, "testblinder-" + getTrace().getProjectName() + ".test.js").toFile();
+            FileWriter fileWriter = new FileWriter(testsFile);
             BufferedWriter writer = new BufferedWriter(fileWriter);
 
             Trace t = getTrace();
@@ -265,14 +267,12 @@ public class JestGenerator extends Generator {
                         throw new Exception("Test not found");
                 }
             }
-
             writer.close();
+            System.out.println("Tests generated : " + testsFile.getAbsolutePath());
         } catch (IOException e) {
             throw new RuntimeException(e);
         } catch (Exception e) {
             throw new Exception(e);
         }
-
-        System.out.println("Tests generated in : " + path);
     }
 }

@@ -2,9 +2,10 @@ package org.blindtester;
 
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
+//import org.apache.log4j.BasicConfigurator;
 import org.blindtester.generator.Trace;
 import org.blindtester.generator.js.JestGenerator;
-
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 
 /**
@@ -30,6 +31,10 @@ public class Main {
      * @param args is the array containing args from the terminal
      */
     public static void main(String[] args) {
+        // disable log4j for report generation
+        System.setProperty("org.apache.commons.logging.Log",
+                "org.apache.commons.logging.impl.NoOpLog");
+
         // check that user entered a file path
         if (args.length == 0) {
             System.out.println("Please choose one action");
@@ -84,19 +89,19 @@ public class Main {
                             jest.writeTests(t.getProjectPath(), testType);
                             break;
                         default:
-                            System.out.println("Generator not found");
+                            System.out.println("Generator not found : " + generator);
                             break;
                     }
                     break;
                 default:
-                    System.out.println("Action not found" + System.lineSeparator());
+                    System.out.println("Command not found : "+ action + System.lineSeparator());
                     help();
                     System.exit(0);
-
             }
+        } catch (FileNotFoundException e){
+            System.out.println("Trace file not found : Please check the path");
         } catch (Exception e) {
-            System.out.println("A problem occurred during testing : " + e);
-            e.printStackTrace();
+            System.out.println("A unkown problem occurred during execution : " + e);
         }
     }
 }

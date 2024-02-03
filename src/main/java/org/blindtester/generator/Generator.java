@@ -1,13 +1,5 @@
 package org.blindtester.generator;
 
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.pdmodel.PDPageContentStream;
-import org.apache.pdfbox.pdmodel.font.PDType1Font;
-import org.javatuples.Pair;
-
-import java.io.IOException;
-import java.nio.file.Paths;
 import java.util.List;
 
 /**
@@ -71,5 +63,4 @@ public abstract class Generator {
     public Trace getTrace() {
         return trace;
     }
-
 }

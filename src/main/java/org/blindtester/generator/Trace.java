@@ -7,12 +7,12 @@ import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.javatuples.Pair;
-
 import java.awt.*;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.nio.file.Paths;
 
 /**
  * A trace that contain the execution
@@ -254,11 +254,10 @@ public class Trace {
             }
 
             contentStream.endText();
-
             contentStream.close();
-
-            document.save("blindtester-report-" + strDate + ".pdf");
-
+            String reportFilename = Paths.get(getProjectPath(), "blindtester-report-" + strDate + ".pdf").toString();
+            document.save(reportFilename);
+            System.out.println("Report generated : " + reportFilename);
             document.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
