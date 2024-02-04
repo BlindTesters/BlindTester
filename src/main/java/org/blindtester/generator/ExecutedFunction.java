@@ -1,16 +1,17 @@
 package org.blindtester.generator;
 
 import com.google.gson.annotations.SerializedName;
+import org.apache.spark.ml.clustering.KMeans;
+import org.apache.spark.ml.clustering.KMeansModel;
+import org.apache.spark.ml.evaluation.ClusteringEvaluator;
+import org.apache.spark.ml.linalg.Vector;
+import org.apache.spark.sql.Dataset;
+import org.apache.spark.sql.Row;
+import org.apache.spark.sql.SparkSession;
 import org.blindtester.generator.js.JSUtil;
 import org.javatuples.Pair;
 
-import org.zeroturnaround.exec.ProcessExecutor;
-import org.zeroturnaround.exec.stream.LogOutputStream;
-
-import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.TimeoutException;
-import java.util.Set;
 
 public class ExecutedFunction {
     /**
@@ -70,7 +71,7 @@ public class ExecutedFunction {
             }
         }
 
-        return new Pair<Boolean, List<Call>>(sideEffect, distinctCalls);
+        return new Pair<>(sideEffect, distinctCalls);
     }
 
     /**
@@ -100,34 +101,28 @@ public class ExecutedFunction {
             int countArgs = c1.getInputs().size();
 
             if (!mapFuncArgs.containsKey(countArgs)) {
-                mapFuncArgs.put(countArgs, new ArrayList<Call>());
+                mapFuncArgs.put(countArgs, new ArrayList<>());
             }
 
-            mapFuncArgs.get(countArgs).add(c1); // put last call for now
+            mapFuncArgs.get(countArgs).add(c1); // put last detected call for now
         }
 
         // type of inputs and output
         // for each number of args we check that if they have the same type
         // keep cleaned list
-
-        for (var entry : mapFuncArgs.entrySet()) {
-            mapFuncArgs.put(entry.getKey(), keepDifferentInputsOutput(entry.getValue()));
-        }
+        mapFuncArgs.replaceAll((k, v) -> keepDifferentInputsOutput(v));
 
         // keep cleaned list
         for (var entry : mapFuncArgs.entrySet()) {
             List<Call> calls = entry.getValue();
-            for (Call c : calls) {
-                minimumSetCalls.add(c);
-            }
+            minimumSetCalls.addAll(calls);
         }
 
         return minimumSetCalls;
     }
 
     /**
-     * Compute KMeans (currently executing a python script, we might want to improve this
-     * part and use a Java library such as Tribuo for example)
+     * Compute KMeans
      *
      * @return the list of k calls, one per computed cluster.
      */
@@ -135,19 +130,37 @@ public class ExecutedFunction {
         // Retrieve all calls.
         List<Call> allCalls = getDistinctCalls().getValue1();
         List<Call> calls = new ArrayList<>();
-        try {
-            new ProcessExecutor().command("./kmeans/venv/bin/python", "-Wignore", "./kmeans/kmeans.py", "--trace", tracePath)
-                    .redirectOutput(new LogOutputStream() {
-                        @Override
-                        protected void processLine(String line) {
-                            // Retrieve the call at the specified index.
-                            calls.add(allCalls.get(Integer.parseInt(line)));
-                        }
-                    })
-                    .execute();
-        } catch (IOException | InterruptedException | TimeoutException e) {
-            throw new RuntimeException(e);
+
+        // Create a SparkSession.
+        SparkSession spark = SparkSession
+                .builder()
+                .appName("Blindtester-KMeans")
+                .getOrCreate();
+
+        Dataset<Row> dataset = spark.read().format("libsvm").load("data/mllib/sample_kmeans_data.txt");
+
+        KMeans kmeans = new KMeans().setK(2).setSeed(1L);
+        KMeansModel model = kmeans.fit(dataset);
+
+        // Make predictions
+        Dataset<Row> predictions = model.transform(dataset);
+
+        // Evaluate clustering by computing Silhouette score
+        ClusteringEvaluator evaluator = new ClusteringEvaluator();
+
+        double silhouette = evaluator.evaluate(predictions);
+        System.out.println("Silhouette with squared euclidean distance = " + silhouette);
+
+        // Shows the result.
+        Vector[] centers = model.clusterCenters();
+        System.out.println("Cluster Centers: ");
+        for (Vector center: centers) {
+            System.out.println(center);
         }
+        spark.stop();
+
+        calls.add(allCalls.getFirst());
+
         return calls;
     }
 
@@ -165,14 +178,15 @@ public class ExecutedFunction {
 
             // check inputs
             for (Call c2 : differentCalls) {
-                if (!JSUtil.compareInputsTypes(c1.getInputs(), c2.getInputs()) || !JSUtil.equalType(c1.getOutput(), c2.getOutput())) {
+                if (!JSUtil.compareInputsTypes(c1.getInputs(), c2.getInputs())
+                    || !JSUtil.equalType(c1.getOutput(), c2.getOutput())) {
                     same = false;
                     break;
                 }
             }
 
             // check if the call is different or if it is the first to add
-            if (!same || differentCalls.size() == 0) {
+            if (!same || differentCalls.isEmpty()) {
                 differentCalls.add(c1);
             }
         }
@@ -209,13 +223,7 @@ public class ExecutedFunction {
             signatures.add(sbCalls.toString());
         }
 
-        List<String> lst = new ArrayList<>();
-
-        signatures.forEach((e) -> {
-            lst.add(e);
-        });
-
-        return lst;
+        return new ArrayList<>(signatures);
     }
 
     /**
@@ -227,7 +235,7 @@ public class ExecutedFunction {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         String sep = System.lineSeparator();
-        sb.append(getName() + sep);
+        sb.append(getName()).append(sep);
 
         for (Call c : getCalls()) {
             sb.append(String.format("  %s%s", c.toString(), sep));

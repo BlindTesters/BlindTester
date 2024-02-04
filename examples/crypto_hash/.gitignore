@@ -1,6 +1,5 @@
 ### output files ###
 trace.json
-
 blindtester-*test.js
 
 # Logs

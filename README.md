@@ -32,7 +32,7 @@ The goal of this project is to generate automatically tests for a specific funct
 
 - Steps 2 : Run the application you want to test and let JSpector and JStorian listen all function calls and generate a JSON file containing a trace and ASTs for each call.
 
-- Steps 3 : Use TestBlinder to work on the generated JSON file to generate some unit tests based on the runtime execution
+- Steps 3 : Use Blindtester to work on the generated JSON file to generate some unit tests based on the runtime execution
 
 - Steps 4 : Run the tests by hand to verify that they pass and use this methodology to make regression tests and verify that the application and the functions tested still work with upgrades
 

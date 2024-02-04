@@ -243,7 +243,7 @@ public class JestGenerator extends Generator {
     @Override
     public void writeTests(String path, String testType) throws Exception {
         try {
-            File testsFile = Paths.get(path, "testblinder-" + getTrace().getProjectName() + ".test.js").toFile();
+            File testsFile = Paths.get(path, "blindtester-" + getTrace().getProjectName() + ".test.js").toFile();
             FileWriter fileWriter = new FileWriter(testsFile);
             BufferedWriter writer = new BufferedWriter(fileWriter);
 
