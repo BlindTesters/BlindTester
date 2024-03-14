@@ -6,12 +6,21 @@ import org.apache.spark.ml.clustering.KMeansModel;
 import org.apache.spark.ml.evaluation.ClusteringEvaluator;
 import org.apache.spark.ml.linalg.Vector;
 import org.apache.spark.sql.Dataset;
+import org.apache.spark.sql.Encoder;
+import org.apache.spark.sql.Encoders;
 import org.apache.spark.sql.Row;
+import org.apache.spark.sql.RowFactory;
 import org.apache.spark.sql.SparkSession;
+import org.apache.spark.sql.types.DataType;
+import org.apache.spark.sql.types.DataTypes;
+import org.apache.spark.sql.types.StructField;
+import org.apache.spark.sql.types.StructType;
 import org.blindtester.generator.js.JSUtil;
 import org.javatuples.Pair;
 
 import java.util.*;
+
+import javax.xml.crypto.Data;
 
 public class ExecutedFunction {
     /**
@@ -129,15 +138,80 @@ public class ExecutedFunction {
     public List<Call> computeKMeans(String tracePath) {
         // Retrieve all calls.
         List<Call> allCalls = getDistinctCalls().getValue1();
+        List<Object> kCalls = new ArrayList<>();
+        for (Call c : allCalls) {
+            KCall kCall = new KCall(c);
+            kCalls.add(kCall.getValues());
+        }
         List<Call> calls = new ArrayList<>();
+
+        // 1. ignore header
+        // 2. take into account input and output
+        // 2.1 autodetect type of input and output
+
+        // 3. compute kmeans
 
         // Create a SparkSession.
         SparkSession spark = SparkSession
                 .builder()
                 .appName("Blindtester-KMeans")
+                .config("spark.master", "local")
+                .config("spark.driver.bindAddress", "127.0.0.1")
+                .config("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
+                .config("spark.kryo.registrationRequired", "false")
                 .getOrCreate();
+        
+        List<Row> ls = new ArrayList<Row>();
+        Row row = RowFactory.create(kCalls.toArray());
+        ls.add(row);
 
-        Dataset<Row> dataset = spark.read().format("libsvm").load("data/mllib/sample_kmeans_data.txt");
+        List<DataType> datatype = new ArrayList<DataType>();
+        datatype.add(DataTypes.createArrayType(
+            DataTypes.StringType
+        ));
+        // datatype.add(DataTypes.StringType);
+        // datatype.add(DataTypes.StringType);
+        // datatype.add(DataTypes.DoubleType);
+        // datatype.add(DataTypes.DoubleType);
+        // datatype.add(DataTypes.StringType);
+        // datatype.add(DataTypes.createMapType(DataTypes.StringType, DataTypes.StringType));
+        // datatype.add(DataTypes.createMapType(DataTypes.StringType, DataTypes.createArrayType(DataTypes.DoubleType)));
+
+        List<String> header = new ArrayList<String>();
+        header.add("argument1");
+        // header.add("argument2");
+        // header.add("argument3");
+        // header.add("argument4");
+        // header.add("argument5");
+        // header.add("outputtype");
+        // header.add("outputvalue");
+
+        StructField structField1 = new StructField(header.get(0), datatype.get(0), true, org.apache.spark.sql.types.Metadata.empty());
+        // StructField structField2 = new StructField(header.get(1), datatype.get(1), true, org.apache.spark.sql.types.Metadata.empty());
+        // StructField structField3 = new StructField(header.get(2), datatype.get(2), true, org.apache.spark.sql.types.Metadata.empty());
+        // StructField structField4 = new StructField(header.get(3), datatype.get(3), true, org.apache.spark.sql.types.Metadata.empty());
+        // StructField structField5 = new StructField(header.get(4), datatype.get(4), true, org.apache.spark.sql.types.Metadata.empty());
+        List<StructField> structFieldsList = new ArrayList<>();
+        structFieldsList.add(structField1);
+        // structFieldsList.add(structField2);
+        // structFieldsList.add(structField3);
+        // structFieldsList.add(structField4);
+        // structFieldsList.add(structField5);
+
+        StructType schema = new StructType(structFieldsList.toArray(new StructField[0]));
+
+        Dataset<Row> dataset = spark.createDataFrame(ls, schema);
+
+        dataset.show();
+        dataset.printSchema();
+
+        // 
+
+        // Dataset<Call> callDataset = spark.createDataset(allCalls, Encoders.bean(Call.class));
+        Dataset<Row> datasetRows = spark.createDataFrame(kCalls, KCall.class);
+        // Encoder<Call> callEncoder = Encoders.bean(Call.class);
+        // Dataset<Call> callDataset = spark.createDataset(allCalls, callEncoder);
+        // Dataset<Row> dataset = spark.read().format("libsvm").load("data/mllib/sample_kmeans_data.txt");
 
         KMeans kmeans = new KMeans().setK(2).setSeed(1L);
         KMeansModel model = kmeans.fit(dataset);

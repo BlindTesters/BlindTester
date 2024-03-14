@@ -42,6 +42,15 @@ public class Call {
     public List<Object> getInputs() {
         return Inputs;
     }
+    
+    /**
+     * Set inputs for a call
+     *
+     * @param inputs the list of inputs
+     */
+    public void setInputs(List<Object> inputs) {
+        this.Inputs = inputs;
+    }
 
     /**
      * Get the output of the function
@@ -50,6 +59,15 @@ public class Call {
      */
     public Object getOutput() {
         return Output;
+    }
+
+    /**
+     * Set the output of the function
+     *
+     * @param output the output
+     */
+    public void setOutput(Object output) {
+        this.Output = output;
     }
 
     /**
