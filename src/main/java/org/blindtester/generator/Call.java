@@ -2,12 +2,13 @@ package org.blindtester.generator;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * A call of a function
  */
-public class Call {
+public class Call implements Serializable {
     /**
      * List of parameters of a function
      */

@@ -261,7 +261,7 @@ public class JestGenerator extends Generator {
                         writer.write(createTests(ef.getName(), t.getRequires(), ef.computeMinimumSetOfCalls()));
                         break;
                     case "kmeans":
-                        writer.write(createTests(ef.getName(), t.getRequires(), ef.computeKMeans(t.getTracePath())));
+                        writer.write(createTests(ef.getName(), t.getRequires(), ef.computeKMeans()));
                         break;
                     default:
                         throw new Exception("Test not found");

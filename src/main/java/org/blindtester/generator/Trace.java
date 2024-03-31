@@ -220,7 +220,7 @@ public class Trace {
                 // get distinct calls
                 Pair<Boolean, List<Call>> resultDistinct = f.getDistinctCalls();
                 List<Call> distinctCalls = resultDistinct.getValue1();
-                List<Call> clusteredCalls = f.computeKMeans(this.getTracePath());
+                List<Call> clusteredCalls = f.computeKMeans();
                 Boolean sideEffect = resultDistinct.getValue0();
 
                 contentStream.showText("   - " + f.getCalls().size() + " total call(s)");
