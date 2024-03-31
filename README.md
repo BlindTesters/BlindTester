@@ -107,57 +107,29 @@ $ ./node_modules/jest/bin/jest.js
 
 All examples are available in the [examples directory](examples/)
 
-### Fourier
+### Crypto - Generate tests for all runtime execution calls
 
-`fromGain` function from decibels library used by `fourier-transform` library:
+Function to test : `pbkdf2Sync` function from Crypto module of NodeJS
 
-- Add JSpector
+TODO
 
-<p align="center">
-    <img 
-    src="./docs/images/fourier_jspector.png">
-</p>
+### Fourier - Generate a minimal set of tests
 
-- Generate a report
+Function to test : `fromGain` from decibels library used by `fourier-transform` library.
 
-<p align="center">
-    <img 
-    src="./docs/images/fourier_report.png">
-</p>
+TODO
 
-- Generated unit tests
+### KOA - Generate distinct tests for a local function called by the web server
 
-<p align="center">
-    <img 
-    src="./docs/images/fourier_tests.png">
-</p>
+TODO
 
-- Test execution with jest
+### Handle side effects by keeping all detected calls
 
-<p align="center">
-    <img 
-    src="./docs/images/fourier_jest.png">
-</p>
+TODO
 
-### Crypto
+### MathJS - Detect implementation changes for function div
 
-`pbkdf2Sync` function from Crypto module of NodeJS
-
-101 calls to hash a word of which two are duplicates.
-
-- Generated tests for a distinct set of values
-
-<p align="center">
-    <img 
-    src="./docs/images/crypto_generation.png">
-</p>
-
-- Start Jest on automatically generated tests
-
-<p align="center">
-    <img 
-    src="./docs/images/crypto_jest.png">
-</p>
+TODO
 
 ## License
 
