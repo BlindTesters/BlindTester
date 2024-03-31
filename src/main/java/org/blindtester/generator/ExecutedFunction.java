@@ -1,17 +1,14 @@
 package org.blindtester.generator;
 
 import com.google.gson.annotations.SerializedName;
-import org.apache.spark.ml.clustering.KMeans;
-import org.apache.spark.ml.clustering.KMeansModel;
-import org.apache.spark.ml.evaluation.ClusteringEvaluator;
-import org.apache.spark.ml.linalg.Vector;
-import org.apache.spark.sql.Dataset;
-import org.apache.spark.sql.Row;
-import org.apache.spark.sql.SparkSession;
 import org.blindtester.generator.js.JSUtil;
 import org.javatuples.Pair;
+import org.zeroturnaround.exec.ProcessExecutor;
+import org.zeroturnaround.exec.stream.LogOutputStream;
 
+import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.TimeoutException;
 
 public class ExecutedFunction {
     /**
@@ -122,7 +119,8 @@ public class ExecutedFunction {
     }
 
     /**
-     * Compute KMeans
+     * Compute KMeans (currently executing a python script, we might want to improve this
+     * part and use a Java library such as Tribuo for example)
      *
      * @return the list of k calls, one per computed cluster.
      */
@@ -130,37 +128,19 @@ public class ExecutedFunction {
         // Retrieve all calls.
         List<Call> allCalls = getDistinctCalls().getValue1();
         List<Call> calls = new ArrayList<>();
-
-        // Create a SparkSession.
-        SparkSession spark = SparkSession
-                .builder()
-                .appName("Blindtester-KMeans")
-                .getOrCreate();
-
-        Dataset<Row> dataset = spark.read().format("libsvm").load("data/mllib/sample_kmeans_data.txt");
-
-        KMeans kmeans = new KMeans().setK(2).setSeed(1L);
-        KMeansModel model = kmeans.fit(dataset);
-
-        // Make predictions
-        Dataset<Row> predictions = model.transform(dataset);
-
-        // Evaluate clustering by computing Silhouette score
-        ClusteringEvaluator evaluator = new ClusteringEvaluator();
-
-        double silhouette = evaluator.evaluate(predictions);
-        System.out.println("Silhouette with squared euclidean distance = " + silhouette);
-
-        // Shows the result.
-        Vector[] centers = model.clusterCenters();
-        System.out.println("Cluster Centers: ");
-        for (Vector center: centers) {
-            System.out.println(center);
+        try {
+            new ProcessExecutor().command("./kmeans/venv/bin/python", "-Wignore", "./kmeans/kmeans.py", "--trace", tracePath)
+                    .redirectOutput(new LogOutputStream() {
+                        @Override
+                        protected void processLine(String line) {
+                            // Retrieve the call at the specified index.
+                            calls.add(allCalls.get(Integer.parseInt(line)));
+                        }
+                    })
+                    .execute();
+        } catch (IOException | InterruptedException | TimeoutException e) {
+            throw new RuntimeException(e);
         }
-        spark.stop();
-
-        calls.add(allCalls.getFirst());
-
         return calls;
     }
 

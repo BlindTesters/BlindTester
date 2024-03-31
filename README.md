@@ -15,11 +15,11 @@ The goal of this project is to generate automatically tests for a specific funct
 
 - Install [NodeJS](https://nodejs.org/)
 
-- Install [Open JDK 19](https://jdk.java.net/19/)
+- Install [Open JDK 21](https://jdk.java.net/21/)
 
 - Install [Maven](https://maven.apache.org/)
 
-## Description
+## How it works ?
 
 <p align="center">
     <img 
@@ -60,7 +60,7 @@ $ pip install -r requirements.txt
 
 You can now use the K-means option.
 
-NOTE: This is a quick solution to be able to provide some clustering. We might work on a Java implementation if we have enough time by the end of the semester. This was easier for us to do so in a first step for a proof-of-concept.
+NOTE: This is a quick solution to be able to provide some clustering. We might work on a Java implementation with Spark someday.
 
 ## Usage 
 
