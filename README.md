@@ -164,6 +164,16 @@ Function to test : `fromGain` from decibels library used by `fourier-transform` 
 
 ```shell
 cd examples/fourier_analysis
+npm install
+node -r ./instrument.js index.js  
+cd ../../ #return to root directory
+```
+
+#### 1. Generate a trace
+
+```shell
+cd examples/fourier_analysis
+npm install
 node -r ./instrument.js index.js  
 cd ../../ #return to root directory
 ```
@@ -192,6 +202,7 @@ The goal is to check that function with side effects are handled correctly.
 
 ```shell
 cd examples/side_effect
+npm install
 node -r ./instrument.js index.js  
 cd ../../ #return to root directory
 ```
@@ -209,9 +220,51 @@ cd examples/side_effect
 ./node_modules/jest/bin/jest.js
 ```
 
-### MathJS - Detect implementation changes for function div
+### MathJS - Detect implementation changes for a function over time
 
-TODO
+Function to test : `mod` from mathjs library.
+
+#### 1. Generate a trace
+
+```shell
+cd examples/diff_mathjs
+npm install
+node -r ./instrument.js index.js  
+cd ../../ #return to root directory
+```
+
+#### 2. Create tests from the trace
+
+```shell
+java -jar target/blindtester-1.0-SNAPSHOT-jar-with-dependencies.jar generate jest all examples/diff_mathjs/trace.json
+```
+
+#### 3. Execute the tests
+
+```shell
+cd examples/diff_mathjs
+./node_modules/jest/bin/jest.js
+```
+
+Confirm that they all pass.
+
+#### 4. Change mathjs version
+
+Edit `examples/diff_mathjs/package.json` to change version from XXX to YYY.
+
+#### 5. Install new dependencies
+
+```shell
+npm install
+```
+
+#### 6. Execute the tests again with the new version
+
+```shell
+./node_modules/jest/bin/jest.js
+```
+
+You can now see that the tests are failing due to an implementation change in the function.
 
 ## License
 
