@@ -311,17 +311,30 @@ class JSpector {
     start() {
         // Locate the desired library in the paths.
         let libraryPath = require.resolve(this.library_name, {paths:[this.getLibraryPath()]});
-        // require.cache[libraryPath].exports = this.get_library();
 
-        const originalRequire = Module.prototype.require;
-        const outerThis = this;
-
-        Module.prototype.require = function (path) {
-            if (path === libraryPath) {
+        // Try to replace the library in the cache.
+        try {
+          require.cache[libraryPath].exports = this.get_library();
+        } catch(error) {
+          // If the library is not in the cache, we need to replace the require function
+          if (error instanceof TypeError) {
+            const originalRequire = Module.prototype.require;
+            const outerThis = this;
+            
+            Module.prototype.require = function (path) {
+              if (path === libraryPath) {
                 return outerThis.get_library();
-            }
-            return originalRequire.apply(outerThis, arguments);
-        };
+              }
+              return originalRequire.apply(outerThis, arguments);
+            };
+          }
+          // Not handled error.
+          else {
+            console.log(`Could not find the library ${this.library_name} in the cache...`);
+            // rethrow the error
+            throw error;
+          }
+        }
     }
 
 
