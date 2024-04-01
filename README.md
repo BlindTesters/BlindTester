@@ -125,7 +125,7 @@ cd ../../ #return to root directory
 
 <p align="center">
     <img 
-    src="docs/images/crypto_trace_gen.png" 
+    src="./docs/images/crypto_trace_gen.png" 
     >
 </p>
 
@@ -139,7 +139,7 @@ java -jar target/blindtester-1.0-SNAPSHOT-jar-with-dependencies.jar generate jes
 
 <p align="center">
     <img 
-    src="docs/images/crypto_tests.png" 
+    src="./docs/images/crypto_tests.png" 
     >
 </p>
 
@@ -152,7 +152,7 @@ cd examples/crypto_hash
 
 <p align="center">
     <img 
-    src="docs/images/crypto_tests_exec.png" 
+    src="./docs/images/crypto_tests_exec.png" 
     >
 </p>
 
@@ -184,7 +184,7 @@ The goal is to check that function with side effects are handled correctly.
 
 <p align="center">
     <img 
-    src="docs/images/side_code.png" 
+    src="./docs/images/side_code.png" 
     >
 </p>
 
@@ -199,7 +199,7 @@ cd ../../ #return to root directory
 #### 2. Create tests from the trace
 
 ```shell
-java -jar target/blindtester-1.0-SNAPSHOT-jar-with-dependencies.jar generate jest all examples/crypto_hash/trace.json
+java -jar target/blindtester-1.0-SNAPSHOT-jar-with-dependencies.jar generate jest minimal examples/side_effect/trace.json
 ```
 
 #### 3. Execute the tests
