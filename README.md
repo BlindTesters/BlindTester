@@ -70,6 +70,10 @@ NOTE: This is a quick solution to be able to provide some clustering. We might w
 java -jar path_to_jar/blindtester.jar analyse [TRACE_PATH]
 ```
 
+### Generate a trace
+
+Please use [JSpector](JSpector) to generate a trace.json file in your project to be used to generate tests.
+
 ### Unit tests generation
 
 ``` sh
@@ -105,27 +109,105 @@ $ ./node_modules/jest/bin/jest.js
 
 ## Examples
 
-All examples are available in the [examples directory](examples/)
+All examples are available in the [examples directory](examples)
+
+For all tests below we assume that you are in the root directory of the BlindTester project.
 
 ### Crypto - Generate tests for all runtime execution calls
 
+#### 1. Generate a trace
+
+```shell
+cd examples/crypto_hash
+node -r ./instrument.js index.js  
+cd ../../ #return to root directory
+```
+
+<p align="center">
+    <img 
+    src="docs/images/crypto_trace_gen.png" 
+    >
+</p>
+
+#### 2. Create tests from the trace
+
 Function to test : `pbkdf2Sync` function from Crypto module of NodeJS
 
-TODO
+```shell
+java -jar target/blindtester-1.0-SNAPSHOT-jar-with-dependencies.jar generate jest all examples/crypto_hash/trace.json
+```
 
-### Fourier - Generate a minimal set of tests
+<p align="center">
+    <img 
+    src="docs/images/crypto_tests.png" 
+    >
+</p>
+
+#### 3. Execute the tests
+
+```shell
+cd examples/crypto_hash
+./node_modules/jest/bin/jest.js
+```
+
+<p align="center">
+    <img 
+    src="docs/images/crypto_tests_exec.png" 
+    >
+</p>
+
+### Fourier - Generate a report
 
 Function to test : `fromGain` from decibels library used by `fourier-transform` library.
 
-TODO
+#### 1. Generate a trace
 
-### KOA - Generate distinct tests for a local function called by the web server
+```shell
+cd examples/fourier_analysis
+node -r ./instrument.js index.js  
+cd ../../ #return to root directory
+```
+
+#### 2. Generate the report
+
+```shell
+java -jar target/blindtester-1.0-SNAPSHOT-jar-with-dependencies.jar generate analyse examples/crypto_hash/trace.json
+```
+
+#### 2. Open the PDF file generated
 
 TODO
 
 ### Handle side effects by keeping all detected calls
 
-TODO
+The goal is to check that function with side effects are handled correctly.
+
+<p align="center">
+    <img 
+    src="docs/images/side_code.png" 
+    >
+</p>
+
+#### 1. Generate a trace
+
+```shell
+cd examples/side_effect
+node -r ./instrument.js index.js  
+cd ../../ #return to root directory
+```
+
+#### 2. Create tests from the trace
+
+```shell
+java -jar target/blindtester-1.0-SNAPSHOT-jar-with-dependencies.jar generate jest all examples/crypto_hash/trace.json
+```
+
+#### 3. Execute the tests
+
+```shell
+cd examples/side_effect
+./node_modules/jest/bin/jest.js
+```
 
 ### MathJS - Detect implementation changes for function div
 
