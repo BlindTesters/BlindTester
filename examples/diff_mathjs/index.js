@@ -1,3 +1,4 @@
 mathjs = require('mathjs')
 
-mathjs.mod(0.04, 0.5)
+// https://github.com/josdejong/mathjs/issues/2936
+mathjs.mod(0.15, 0.05)

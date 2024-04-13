@@ -248,9 +248,9 @@ cd examples/diff_mathjs
 
 Confirm that they all pass.
 
-#### 4. Change mathjs version
+#### 4. Change mathjs version in package.json
 
-Edit `examples/diff_mathjs/package.json` to change version from XXX to YYY.
+Edit `examples/diff_mathjs/package.json` to change version from 11.8.0 to 12.4.1.
 
 #### 5. Install new dependencies
 
