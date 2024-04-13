@@ -1,11 +1,5 @@
-var a = 0;
+const my_math = require('./my_math.js');
 
-// increment a global variable and returns the value of it
-function inc(){
-    a += 1;
-    return a;
-}
-
-inc(); // first call gives 1 
-inc(); // 2
-inc(); // 3
+my_math.inc(); // first call gives 1
+my_math.inc(); // 2
+my_math.inc(); // 3

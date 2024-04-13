@@ -2,7 +2,7 @@
 const JSpector = require('../../JSpector/jspector');
 
 const jspector = new JSpector(
-  __filename,
+  './my_math',
   'inc',
   'SSE23-mymath'
 );
