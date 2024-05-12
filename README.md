@@ -19,7 +19,7 @@ The goal of this project is to generate automatically tests for a specific funct
 
 - Install [Maven](https://maven.apache.org/)
 
-## How it works ?
+## Overview
 
 - Steps 1 : Inject [JSpector](JSpector/) to capture the execution call of a function
 
@@ -51,46 +51,46 @@ $ source venv/bin/activate
 $ pip install -r requirements.txt
 ```
 
-You can now use the K-means option.
+## Generate an execution trace for a project
 
-NOTE: This is a quick solution to be able to provide some clustering. We might work on a Java implementation with Spark someday.
+Please use [JSpector](JSpector) to generate a trace.json file in your project to be used to generate tests.
 
-## Usage 
+## Generate a report and tests from an an execution trace file
 
-### Report generation
+### 1. Report generation (Optional)
+
+Use the following command to generate a report based on the trace file :
 
 ``` sh
 java -jar path_to_jar/blindtester.jar analyse [TRACE_PATH]
 ```
 
-### Generate a trace
+This will generate a PDF report on the analysis that may help you to decide which set of tests to generate.
 
-Please use [JSpector](JSpector) to generate a trace.json file in your project to be used to generate tests.
+### 2. Unit tests generation
 
-### Unit tests generation
+USe the following command to generate unit tests based on the trace file :
 
 ``` sh
 $ java -jar testbuilder.jar generate [GENERATOR] [TEST_TYPE] [TRACE_PATH]
 ```
 
-Where `GENERATOR` is the name of the generator that target a test system and `TEST_TYPE` one option among the following:
-
-- `all` : Generate a test for all calls in the trace
-- `distinct`: Generate tests only for distinct calls
-- `minimal`: Generate tests only for the minimal set of calls
-- `kmeans`: Generate only one test for detected cluster via K-means method
+Where
+- `GENERATOR` is the name of the generator:
+    - `jest` : [Jest](https://jestjs.io/) is Test framework for JavaScript and TypeScript
+- `TEST_TYPE` one option among the following:
+    - `all`     : Generate a test for all calls in the trace
+    - `distinct`: Generate tests only for distinct calls
+    - `minimal` : Generate tests only for the minimal set of calls
+    - `kmeans`  : Generate only one test for detected cluster via K-means method
 
 *At this time, only a generator for Jest is implemented in BlindTester*
 
-#### Generate all tests from a trace for Jest
-
-``` sh
-$ java -jar path_to_jar/blindtester.jar jest all path_to_trace/trace.json
-```
+## Generate a report and tests from an an execution trace file
 
 #### Execute tests with Jest
 
-Go to your project directory and : 
+Go to your project directory and :
 
 ``` sh
 # If jest is not installed please install it
@@ -112,13 +112,14 @@ For all tests below we assume that you are in the root directory of the BlindTes
 
 ```shell
 cd examples/crypto_hash
-node -r ./instrument.js index.js  
+npm install
+node -r ./instrument.js index.js
 cd ../../ #return to root directory
 ```
 
 <p align="center">
-    <img 
-    src="./docs/images/crypto_trace_gen.png" 
+    <img
+    src="./docs/images/crypto_trace_gen.png"
     >
 </p>
 
@@ -131,8 +132,8 @@ java -jar target/blindtester-1.0-SNAPSHOT-jar-with-dependencies.jar generate jes
 ```
 
 <p align="center">
-    <img 
-    src="./docs/images/crypto_tests.png" 
+    <img
+    src="./docs/images/crypto_tests.png"
     >
 </p>
 
@@ -142,12 +143,6 @@ java -jar target/blindtester-1.0-SNAPSHOT-jar-with-dependencies.jar generate jes
 cd examples/crypto_hash
 ./node_modules/jest/bin/jest.js
 ```
-
-<p align="center">
-    <img 
-    src="./docs/images/crypto_tests_exec.png" 
-    >
-</p>
 
 ### Fourier - Generate a report
 
@@ -162,24 +157,13 @@ node -r ./instrument.js index.js
 cd ../../ #return to root directory
 ```
 
-#### 1. Generate a trace
-
-```shell
-cd examples/fourier_analysis
-npm install
-node -r ./instrument.js index.js  
-cd ../../ #return to root directory
-```
-
-#### 2. Generate the report
+#### 2. Generate the report (Optional)
 
 ```shell
 java -jar target/blindtester-1.0-SNAPSHOT-jar-with-dependencies.jar generate analyse examples/crypto_hash/trace.json
 ```
 
-#### 2. Open the PDF file generated
-
-TODO
+You will find the generated report in the project directory.
 
 ### Handle side effects by keeping all detected calls
 
