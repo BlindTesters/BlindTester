@@ -9,40 +9,57 @@
 
 Project for the Software Engineering Seminar 2023 at University of Bern for the BeNeFri Joint Master of Computer Science.
 
-The goal of this project is to generate automatically tests for a specific function from runtime execution.
+The goal of this project is to generate unit tests for a specific function from traces files that contains information about runtime execution of a program.
 
-## Dependencies
+Actually, this project contains a small Javascript library to get runtime execution trace from nodejs runtime execution and a java program that will generate Jest unit tests for javascript programs.
 
-- Install [NodeJS](https://nodejs.org/)
+Each function call will be considered as a black box. The trace contains all inputs and output for a specific function. BlindTester will generate a test for each distinct call.
 
-- Install [Open JDK 21](https://jdk.java.net/21/)
+## 1. Overview
 
-- Install [Maven](https://maven.apache.org/)
+To be able to  capture NodeJS runtime execution, we developed a small tool that need to be injected in your main JS file running in NodeJS.
 
-## Overview
+After execution of your program, JSpector will output a trace.json file in the same directory of your project. 
 
-- Steps 1 : Inject [JSpector](JSpector/) to capture the execution call of a function
+From this JSON file, we will be able to generate unit tests with our Java application Blindtesters.
 
-- Steps 2 : Run the application you want to test and let JSpector and JStorian listen all function calls and generate a JSON file containing a trace and ASTs for each call.
+- Steps 1 : Inject the library [JSpector](JSpector/) in your NodeJS project to capture the execution call of a specific function
+
+- Steps 2 : Run your NodeJS application normally and let JSpector listen all function calls and generate a JSON file containing a trace and an ASTs for each call.
 
 - Steps 3 : Use Blindtester to work on the generated JSON file to generate some unit tests based on the runtime execution or generate a report based on the trace.
 
-- Steps 4 : Run the tests by hand to verify that they pass and use this methodology to make regression tests and verify that the application and the functions tested still work with upgrades.
+- Steps 4 : Manually run the newly created tests to verify that they pass and use this methodology to make regression tests and verify that the application and the functions tested still work with upgrades.
 
-## Installation
+## 2. Installation
 
-Each function call is considered as a black box. The trace contains all inputs and output for a specific function. BlindTester will generate a test for each distinct call.
+### 2.1 External dependencies
 
-### Compile BlindTester
+- Install last version of [NodeJS](https://nodejs.org/)
 
-Go to the project's directory and : 
+- Install [Open JDK 22](https://jdk.java.net/22/) or newer
 
-``` sh
-$ mvn clean compile assembly:single
-```
+- Install last version of [Maven](https://maven.apache.org/)
 
-### K-means specific configuration
-We currently need a python installation to compute the K-means cluster. If you want to use this feature, please make sure that you have a valid python installation on your computer. Then, create a python virtual environment in the K-means folder and install all the dependencies in the virtual environment.
+- Ensure `distutils` is installed if you are running python 3.12 or newer on your system
+  - With pip
+    - ```$ sh pip install setuptools ```
+  - With pip3
+    - ```$ pip3 install setuptools```
+  - With brew on Mac OSX
+    - ```$ brew install python-setuptools```
+
+#### 2.1.1 Data science dependencies
+
+For now, our java application call a python script to make usage opf library to compute kmeans clusters.
+
+This means a minimal setup must be done for Blindtester to be able to execute our python script.
+
+We may implement later a better way to do KMeans using another library like Apache Spark.
+
+##### 2.1.1.1 K-means specific configuration
+
+Blindtester is actually using a python script to compute kmeans clusters. 
 
 ``` sh
 $ cd kmeans
@@ -51,11 +68,19 @@ $ source venv/bin/activate
 $ pip install -r requirements.txt
 ```
 
+### 2.2 Compile the test generator BlindTester
+
+Go to the project's directory and : 
+
+``` sh
+$ mvn clean compile assembly:single
+```
+
 ## Generate an execution trace for a project
 
 Please use [JSpector](JSpector) to generate a trace.json file in your project to be used to generate tests.
 
-## Generate a report and tests from an an execution trace file
+## Generate a report and tests from an execution trace file
 
 ### 1. Report generation (Optional)
 
