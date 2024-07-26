@@ -11,9 +11,17 @@ Project for the Software Engineering Seminar 2023 at University of Bern for the 
 
 The goal of this project is to generate automatically tests for a specific function from runtime execution.
 
-## Quickstart
+## 1. Installation
 
-You will need to create a file in which you will specify some configuration that will be used to wrap the targeted function and start the injection. You can copy-paste the following configuration and adapt it to your use case:
+Install all dependencies for JSpector with the following command : 
+
+``` shell
+npm install
+```
+
+## 2. Quickstart
+
+If you do want to use the libary in another project, you will need to create a file in the directory of your NodeJS project where you will specify some configuration that will wrap the targeted function and start the injection. You can copy-paste the following configuration and adapt it to your use case:
 
 ``` javascript
 // Inject a wrapper around the function in the class we want to inspect.
@@ -32,7 +40,7 @@ jspector.start();
 In order to actually use the injection, you will also need to add a requirements to the node command used to run the application. Assuming the content of the file above is saved in a file called `instrument.js` and that your application is run via `index.js`, you will have to add `-r ./instrument.js` to the command, in order to explicitly tell node to use this additional requirement.
 
 ```sh
-$ node -r ./instrument.js index.js  
+$ node -r ./instrument.js index.js
 ```
 
 Doing so gives a higher degree of flexibility since you can still execute your application without instrumenting anything simply by removing the `-r` option in the command.
