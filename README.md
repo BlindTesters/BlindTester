@@ -13,7 +13,7 @@ The goal of this project is to generate unit tests for a specific function from 
 
 Actually, this project contains a small Javascript library to get runtime execution trace from nodejs runtime execution and a java program that will generate Jest unit tests for javascript programs.
 
-Each function call will be considered as a black box. The trace contains all inputs and output for a specific function. BlindTester will generate a test for each distinct call.
+Each function call is a black box. The trace contains all inputs and output for a specific function. BlindTester will generate a test for each distinct call.
 
 ## 1. Overview
 
@@ -53,13 +53,9 @@ From this JSON file, we will be able to generate unit tests with our Java applic
 
 For now, our java application call a python script to make usage opf library to compute kmeans clusters.
 
-This means a minimal setup must be done for Blindtester to be able to execute our python script.
+This means installing a minimal setup for Blindtester to be able to execute python scripts.
 
 We may implement later a better way to do KMeans using another library like Apache Spark.
-
-##### 2.1.1.1 K-means specific configuration
-
-Blindtester is actually using a python script to compute kmeans clusters. 
 
 ``` sh
 $ cd kmeans
@@ -76,13 +72,15 @@ Go to the project's directory and :
 $ mvn clean compile assembly:single
 ```
 
-## Generate an execution trace for a project
+### 2.3 Make sure the library JSpector dependencies are installed
 
-Please use [JSpector](JSpector) to generate a trace.json file in your project to be used to generate tests.
+Please use [JSpector](JSpector) to generate a trace.json file in your project to generate tests.
 
-## Generate a report and tests from an execution trace file
+You need to follow the [JSpector README](JSector) to install npm dependencies and make sure JSpector is accessible by the project you want to create tests.
 
-### 1. Report generation (Optional)
+## 3. Generate a report and tests from an execution trace file
+
+### 3.1 Report generation (Optional)
 
 Use the following command to generate a report based on the trace file :
 
@@ -92,7 +90,7 @@ java -jar path_to_jar/blindtester.jar analyse [TRACE_PATH]
 
 This will generate a PDF report on the analysis that may help you to decide which set of tests to generate.
 
-### 2. Unit tests generation
+### 3.2 Unit tests generation
 
 USe the following command to generate unit tests based on the trace file :
 
@@ -111,7 +109,7 @@ Where
 
 *At this time, only a generator for Jest is implemented in BlindTester*
 
-## Generate a report and tests from an an execution trace file
+## 3.3 Generate a report and tests from an an execution trace file
 
 #### Execute tests with Jest
 
@@ -125,15 +123,17 @@ $ npm install jest
 $ ./node_modules/jest/bin/jest.js
 ```
 
-## Examples
+## 4. Examples
 
 All examples are available in the [examples directory](examples)
 
 For all tests below we assume that you are in the root directory of the BlindTester project.
 
-### Crypto - Generate tests for all runtime execution calls
+Make sure you installed JSpector dependencies : [JSpector README](JSpector)
 
-#### 1. Generate a trace
+### 4.1 Crypto - Generate tests for all runtime execution calls
+
+#### 4.1.1 Generate a trace
 
 ```shell
 cd examples/crypto_hash
@@ -148,7 +148,7 @@ cd ../../ #return to root directory
     >
 </p>
 
-#### 2. Create tests from the trace
+#### 4.1.2 Create tests from the trace
 
 Function to test : `pbkdf2Sync` function from Crypto module of NodeJS
 
@@ -162,18 +162,18 @@ java -jar target/blindtester-1.0-SNAPSHOT-jar-with-dependencies.jar generate jes
     >
 </p>
 
-#### 3. Execute the tests
+#### 4.1.3 Execute the tests
 
 ```shell
 cd examples/crypto_hash
 ./node_modules/jest/bin/jest.js
 ```
 
-### Fourier - Generate a report
+### 4.2 Fourier - Generate a report
 
 Function to test : `fromGain` from decibels library used by `fourier-transform` library.
 
-#### 1. Generate a trace
+#### 4.2.1 Generate a trace
 
 ```shell
 cd examples/fourier_analysis
@@ -182,7 +182,7 @@ node -r ./instrument.js index.js
 cd ../../ #return to root directory
 ```
 
-#### 2. Generate the report (Optional)
+#### 4.2.2 Generate the report (Optional)
 
 ```shell
 java -jar target/blindtester-1.0-SNAPSHOT-jar-with-dependencies.jar generate analyse examples/crypto_hash/trace.json
@@ -190,7 +190,7 @@ java -jar target/blindtester-1.0-SNAPSHOT-jar-with-dependencies.jar generate ana
 
 You will find the generated report in the project directory.
 
-### Handle side effects by keeping all detected calls
+### 4.3 Handle side effects by keeping all detected calls
 
 The goal is to check that function with side effects are handled correctly.
 
@@ -200,7 +200,7 @@ The goal is to check that function with side effects are handled correctly.
     >
 </p>
 
-#### 1. Generate a trace
+#### 4.3.1 Generate a trace
 
 ```shell
 cd examples/side_effect
@@ -209,24 +209,24 @@ node -r ./instrument.js index.js
 cd ../../ #return to root directory
 ```
 
-#### 2. Create tests from the trace
+#### 4.3.2 Create tests from the trace
 
 ```shell
 java -jar target/blindtester-1.0-SNAPSHOT-jar-with-dependencies.jar generate jest minimal examples/side_effect/trace.json
 ```
 
-#### 3. Execute the tests
+#### 4.3.3 Execute the tests
 
 ```shell
 cd examples/side_effect
 ./node_modules/jest/bin/jest.js
 ```
 
-### MathJS - Detect implementation changes for a function over time
+### 4.4 MathJS - Detect implementation changes for a function over time
 
 Function to test : `mod` from mathjs library.
 
-#### 1. Generate a trace
+#### 4.4.1 Generate a trace
 
 ```shell
 cd examples/diff_mathjs
@@ -235,13 +235,13 @@ node -r ./instrument.js index.js
 cd ../../ #return to root directory
 ```
 
-#### 2. Create tests from the trace
+#### 4.4.2 Create tests from the trace
 
 ```shell
 java -jar target/blindtester-1.0-SNAPSHOT-jar-with-dependencies.jar generate jest all examples/diff_mathjs/trace.json
 ```
 
-#### 3. Execute the tests
+#### 4.4.3 Execute the tests
 
 ```shell
 cd examples/diff_mathjs
@@ -250,17 +250,17 @@ cd examples/diff_mathjs
 
 Confirm that they all pass.
 
-#### 4. Change mathjs version in package.json
+#### 4.4.4 Change mathjs version in package.json
 
 Edit `examples/diff_mathjs/package.json` to change version from 11.8.0 to 12.4.1.
 
-#### 5. Install new dependencies
+#### 4.4.5 Install new dependencies
 
 ```shell
 npm install
 ```
 
-#### 6. Execute the tests again with the new version
+#### 4.4.6 Execute the tests again with the new version
 
 ```shell
 ./node_modules/jest/bin/jest.js
