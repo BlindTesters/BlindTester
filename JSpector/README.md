@@ -7,13 +7,13 @@
         height="100">
 </p>
 
-Project for the Software Engineering Seminar 2023 at University of Bern for the BeNeFri Joint Master of Computer Science.
+`JSpector` was written as part of the `BlindTester` which was a project carried out as part of the BeNeFri Joint Master of Computer Science during the Software Engineering Seminar 2023 at University of Bern.
 
-The goal of this project is to generate automatically tests for a specific function from runtime execution.
+The goal of this tool is to intercept every call to a given function to write a trace of the execution in a file (usually named `trace.json`). This file will then be used by the `BlindTester` application.
 
 ## 1. Installation
 
-Install all dependencies for JSpector with the following command : 
+In your terminal, go to the tool's root and install all the required dependencies with the following command : 
 
 ``` shell
 npm install
@@ -21,7 +21,7 @@ npm install
 
 ## 2. Quickstart
 
-If you do want to use the libary in another project, you will need to create a file in the directory of your NodeJS project where you will specify some configuration that will wrap the targeted function and start the injection. You can copy-paste the following configuration and adapt it to your use case:
+`JSpector` works as a wrapper that will transparently replace the desired function in order to keep a track of every input and output of the function. If one wants to use the library in their project, it will require to create a file (usually called `instrument.js`) to instrument the application. An example of such a file is given below. This file can be adapted to one needs, according to their use case.
 
 ``` javascript
 // Inject a wrapper around the function in the class we want to inspect.
@@ -37,15 +37,15 @@ const jspector = new JSpector(
 jspector.start();
 ```
 
-In order to actually use the injection, you will also need to add a requirements to the node command used to run the application. Assuming the content of the file above is saved in a file called `instrument.js` and that your application is run via `index.js`, you will have to add `-r ./instrument.js` to the command, in order to explicitly tell node to use this additional requirement.
+In order to actually run the injection, you will also need to use the `require` option of the node executable. Assuming the content of the file above is saved in a file called `instrument.js` and that your application is run via `node index.js`, you will have to add `-r ./instrument.js` to the command, in order to explicitly tell node to use this additional requirement.
 
 ```sh
 $ node -r ./instrument.js index.js
 ```
 
-Doing so gives a higher degree of flexibility since you can still execute your application without instrumenting anything simply by removing the `-r` option in the command.
+Doing so gives a higher degree of flexibility since you can still execute your application without instrumenting anything simply by simply removing the `-r` option in the command.
 
-*Please note that the trace contains the path of the project. Please restart JSpector or edit the trace.json file if your project changed path*
+*Please note that the trace contains the path of the project. Please restart JSpector or edit the trace.json file if your project has moved to another directory.*
 
 ## License
 
